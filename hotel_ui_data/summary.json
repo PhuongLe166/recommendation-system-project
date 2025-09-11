@@ -1,0 +1,35 @@
+{
+  "dataset_info": {
+    "total_hotels": 740,
+    "algorithms": [
+      "TF-IDF",
+      "Gensim LSI",
+      "Doc2Vec"
+    ],
+    "features": [
+      "Hotel descriptions",
+      "Ratings",
+      "Star ratings",
+      "Comments count"
+    ]
+  },
+  "files_created": {
+    "hotels.csv": "Main hotel database (CSV format)",
+    "hotels.json": "Main hotel database (JSON format)",
+    "tfidf_similarity.npy": "TF-IDF similarity matrix",
+    "gensim_similarity.npy": "Gensim LSI similarity matrix",
+    "doc2vec_similarity.npy": "Doc2Vec similarity matrix",
+    "hotel_id_mapping.json": "Hotel ID to matrix index mapping",
+    "tfidf_vectorizer.pkl": "Trained TF-IDF vectorizer",
+    "performance_metrics.json": "Algorithm performance comparison",
+    "sample_recommendations.json": "Sample recommendation results"
+  },
+  "ui_integration_notes": [
+    "Use hotels.json for hotel database",
+    "Use similarity matrices for recommendations",
+    "Use hotel_id_mapping.json to convert IDs to matrix indices",
+    "Use performance_metrics.json to show algorithm stats",
+    "Load tfidf_vectorizer.pkl for new query processing"
+  ],
+  "generated_at": "2025-09-10 15:52:46"
+}

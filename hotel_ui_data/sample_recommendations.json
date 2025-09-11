@@ -1,0 +1,167 @@
+{
+  "1_1": {
+    "query_hotel": {
+      "id": 11,
+      "name": "Khách sạn Mường Thanh Luxury Nha Trang (Muong Thanh Luxury Nha Trang Hotel)"
+    },
+    "recommendations": [
+      {
+        "hotel_id": 220,
+        "hotel_name": "Khách sạn V Nha Trang (V Hotel Nha Trang)",
+        "similarity_score": 0.49624203364026187
+      },
+      {
+        "hotel_id": 425,
+        "hotel_name": "Diamond Bay Hotel",
+        "similarity_score": 0.4880147473591867
+      },
+      {
+        "hotel_id": 815,
+        "hotel_name": "Khách sạn Nhi Phi (Nhi Phi Hotel Nha Trang)",
+        "similarity_score": 0.47716258423430136
+      },
+      {
+        "hotel_id": 12,
+        "hotel_name": "ALPHA BIRD NHA TRANG",
+        "similarity_score": 0.47707159080946826
+      },
+      {
+        "hotel_id": 1827,
+        "hotel_name": "Khu nghỉ dưỡng, Khách sạn và Spa Yasaka Sài Gòn (Yasaka Saigon Resort Hotel & Spa)",
+        "similarity_score": 0.4756251404901418
+      }
+    ]
+  },
+  "1_2": {
+    "query_hotel": {
+      "id": 12,
+      "name": "ALPHA BIRD NHA TRANG"
+    },
+    "recommendations": [
+      {
+        "hotel_id": 227,
+        "hotel_name": "Khách Sạn và Spa Emerald Bay (Emerald Bay Hotel and Spa)",
+        "similarity_score": 0.49047176254838437
+      },
+      {
+        "hotel_id": 2422,
+        "hotel_name": "Rigel Hotel",
+        "similarity_score": 0.4861048290490647
+      },
+      {
+        "hotel_id": 410,
+        "hotel_name": "Khách sạn Poseidon Nha Trang (Poseidon Nha Trang Hotel)",
+        "similarity_score": 0.4807999503272462
+      },
+      {
+        "hotel_id": 220,
+        "hotel_name": "Khách sạn V Nha Trang (V Hotel Nha Trang)",
+        "similarity_score": 0.4802714054986912
+      },
+      {
+        "hotel_id": 1916,
+        "hotel_name": "Khách sạn Sochi (Sochi Hotel)",
+        "similarity_score": 0.47979855675396016
+      }
+    ]
+  },
+  "1_3": {
+    "query_hotel": {
+      "id": 13,
+      "name": "Khách sạn Aaron (Aaron Hotel)"
+    },
+    "recommendations": [
+      {
+        "hotel_id": 225,
+        "hotel_name": "Khách sạn Ale Nha Trang (Ale Nha Trang Hotel)",
+        "similarity_score": 0.4948114473514849
+      },
+      {
+        "hotel_id": 310,
+        "hotel_name": "Khách sạn Dendro Gold (Dendro Gold Hotel )",
+        "similarity_score": 0.48969873079162696
+      },
+      {
+        "hotel_id": 115,
+        "hotel_name": "Khách Sạn Erica Nha Trang (Erica Nha Trang Hotel)",
+        "similarity_score": 0.4753228748718674
+      },
+      {
+        "hotel_id": 3426,
+        "hotel_name": "Sun and Sea Mường Thanh Holidays (Sun and Sea Muong Thanh Holidays)",
+        "similarity_score": 0.4719288712471901
+      },
+      {
+        "hotel_id": 112,
+        "hotel_name": "Khách sạn AZURA (Azura Hotel)",
+        "similarity_score": 0.46587790363418363
+      }
+    ]
+  },
+  "1_4": {
+    "query_hotel": {
+      "id": 14,
+      "name": "Panorama Star Beach Nha Trang"
+    },
+    "recommendations": [
+      {
+        "hotel_id": 220,
+        "hotel_name": "Khách sạn V Nha Trang (V Hotel Nha Trang)",
+        "similarity_score": 0.44929594231038644
+      },
+      {
+        "hotel_id": 16,
+        "hotel_name": "Căn hộ Kymodo Panorama (Kymodo Panorama Apartment)",
+        "similarity_score": 0.4482771870955768
+      },
+      {
+        "hotel_id": 123,
+        "hotel_name": "Holi Panorama Nha Trang",
+        "similarity_score": 0.4471241687502151
+      },
+      {
+        "hotel_id": 1220,
+        "hotel_name": "Khách sạn Bình An (Binh An Hotel Nha Trang)",
+        "similarity_score": 0.4452652300553264
+      },
+      {
+        "hotel_id": 618,
+        "hotel_name": "Homie Panorama Nha Trang",
+        "similarity_score": 0.4382512741330633
+      }
+    ]
+  },
+  "1_5": {
+    "query_hotel": {
+      "id": 15,
+      "name": "Khách sạn Balcony Nha Trang (Balcony Nha Trang Hotel)"
+    },
+    "recommendations": [
+      {
+        "hotel_id": 245,
+        "hotel_name": "Khách sạn Pavillon Garden Nha Trang (Pavillon Garden Hotel Nha Trang)",
+        "similarity_score": 0.47847915295708343
+      },
+      {
+        "hotel_id": 1517,
+        "hotel_name": "Khách Sạn Seana (Seana Hotel)",
+        "similarity_score": 0.47788913746878386
+      },
+      {
+        "hotel_id": 325,
+        "hotel_name": "Khách Sạn Ventana Nha Trang (Ventana Nha Trang Hotel)",
+        "similarity_score": 0.47206703547628753
+      },
+      {
+        "hotel_id": 220,
+        "hotel_name": "Khách sạn V Nha Trang (V Hotel Nha Trang)",
+        "similarity_score": 0.47194980187740454
+      },
+      {
+        "hotel_id": 401,
+        "hotel_name": "Stella Maris Nha Trang Hotel",
+        "similarity_score": 0.47128780296910616
+      }
+    ]
+  }
+}

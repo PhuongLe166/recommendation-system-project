@@ -1,0 +1,27 @@
+{
+  "methods": {
+    "tfidf": {
+      "name": "TF-IDF + Cosine Similarity",
+      "build_time": 2.2602014541625977,
+      "precision_5": 0.9575675675675674,
+      "map_score": 0.9671616035678536,
+      "correlation": 0.22187779835956928
+    },
+    "gensim": {
+      "name": "Gensim TF-IDF + LSI",
+      "build_time": 2.8647825717926025,
+      "precision_5": 0.9562162162162161,
+      "map_score": 0.9670769113075661,
+      "correlation": 0.14791752578008519
+    },
+    "doc2vec": {
+      "name": "Doc2Vec Neural Embeddings",
+      "build_time": 27.683408737182617,
+      "precision_5": 0.972972972972973,
+      "map_score": 0.9785739406498336,
+      "correlation": 0.28758915449350286
+    }
+  },
+  "total_hotels": 740,
+  "generated_at": "2025-09-10T15:52:46.785069"
+}
