@@ -6,6 +6,7 @@ from components.sidebar import render_sidebar
 from components.search import render_search
 from components.filters import render_filters
 from components.results import render_results
+from components.evaluation import render_evaluation
 from data import load_hotels_df, load_id_mapping, load_metrics, load_doc2vec_model, load_doc2vec_similarity
 from recommender import (
     DEFAULT_FILTERS, apply_filters, count_active_filters,
@@ -140,9 +141,8 @@ if current_page == "Business Problem":
     st.markdown("*Content for Business Problem will be added here*")
 
 elif current_page == "Evaluation & Report":
-    # Evaluation & Report Page - Just header
-    st.markdown("## 📈 Evaluation & Report")
-    st.markdown("*Content for Evaluation & Report will be added here*")
+    # Evaluation & Report Page
+    render_evaluation()
 
 elif current_page == "Recommendation":
     # Original Recommendation Page
