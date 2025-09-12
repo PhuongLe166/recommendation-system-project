@@ -82,6 +82,7 @@ if st.session_state.processing:
                     search_result["query_text"], 
                     d2v, 
                     hotels_df, 
+                    id_map,
                     top_k=20
                 )
                 st.session_state.all_recs = results
