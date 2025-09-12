@@ -35,24 +35,99 @@ def _row_to_dict(row, sim):
         "desc": row.get("Hotel_Description", ""),
     }
 
-def search_by_query_doc2vec(query_text: str, model: Doc2Vec, hotels_df: pd.DataFrame, top_k=20):
+def _get_docvec(model: Doc2Vec, key):
+    """Safely fetch a document vector by tag, accepting int or str tags."""
+    try:
+        return model.dv[key]
+    except KeyError:
+        return model.dv[str(key)]
+
+def search_by_query_doc2vec(query_text: str, model: Doc2Vec, hotels_df: pd.DataFrame, id_mapping: dict, top_k=20):
     tokens = preprocess_query(query_text)
-    if not tokens: return []
-    qv = model.infer_vector(tokens)
-    # Giả định doc tags là '0','1',... theo index của hotels_df
-    dv = np.array([model.dv[str(i)] for i in range(len(hotels_df))])
-    sim = cosine_similarity([qv], dv).ravel()
-    top_idx = np.argsort(sim)[::-1][:top_k]
-    return [_row_to_dict(hotels_df.iloc[i], sim[i]) for i in top_idx]
+    if not tokens:
+        return []
+
+    # Deterministic inference by seeding RNG from the normalized query
+    seed_source = " ".join(tokens)
+    seed_value = abs(hash(seed_source)) % (2**32 - 1)
+    rng_state = model.random.get_state()
+    try:
+        model.random.seed(seed_value)
+        query_vector = model.infer_vector(tokens)
+    finally:
+        # Restore RNG so other parts of the app remain unaffected
+        model.random.set_state(rng_state)
+
+    # Build document matrix aligned to hotels_df rows using the provided id mapping
+    doc_matrix = []
+    valid_row_indices = []
+    for row_index, row in hotels_df.iterrows():
+        hotel_id = row.get("Hotel_ID")
+        key = str(hotel_id)
+        if key not in id_mapping:
+            continue
+        doc_index = id_mapping[key]
+        doc_matrix.append(_get_docvec(model, doc_index))
+        valid_row_indices.append(row_index)
+
+    if not doc_matrix:
+        return []
+
+    doc_matrix = np.asarray(doc_matrix)
+    similarities = cosine_similarity([query_vector], doc_matrix).ravel()
+
+    # Stable ranking: sort by similarity desc, tie-break by Hotel_ID asc
+    hotel_ids_for_tie = hotels_df.loc[valid_row_indices, "Hotel_ID"].to_numpy()
+    order = np.lexsort((hotel_ids_for_tie, -similarities))  # ascending on -sim == desc on sim
+    top_order = order[:top_k]
+
+    results = []
+    for pos in top_order:
+        row_idx = valid_row_indices[int(pos)]
+        sim_score = float(similarities[int(pos)])
+        results.append(_row_to_dict(hotels_df.iloc[row_idx], sim_score))
+    return results
 
 def similar_by_hotel_doc2vec(hotel_id, hotels_df, sim_matrix, id_mapping, top_k=20):
     key = str(hotel_id)
-    if key not in id_mapping: return []
-    idx = id_mapping[key]
-    scores = sim_matrix[idx]
-    order = np.argsort(scores)[::-1]
-    order = order[order != idx][:top_k]  # bỏ chính nó
-    return [_row_to_dict(hotels_df.iloc[i], scores[i]) for i in order]
+    if key not in id_mapping:
+        return []
+
+    target_doc_index = id_mapping[key]
+    scores = sim_matrix[target_doc_index]
+
+    # Build mapping from doc index -> row index for correct alignment
+    doc_index_to_row_index = {}
+    hotel_ids_in_doc_order = []
+    for row_index, row in hotels_df.iterrows():
+        hid = str(row.get("Hotel_ID"))
+        if hid in id_mapping:
+            di = id_mapping[hid]
+            doc_index_to_row_index[di] = row_index
+    # Prepare hotel ids array aligned to scores indices for tie-breaks; fill with large values if missing
+    max_hid = int(1e12)
+    hotel_ids_for_tie = np.full_like(scores, fill_value=max_hid, dtype=np.int64)
+    for di, row_index in doc_index_to_row_index.items():
+        try:
+            hotel_ids_for_tie[di] = int(hotels_df.iloc[row_index]["Hotel_ID"])
+        except Exception:
+            # Fallback keeps max value, ensuring missing ones go last on ties
+            pass
+
+    # Exclude self, sort by score desc with stable tie-break on Hotel_ID asc
+    mask_not_self = np.ones_like(scores, dtype=bool)
+    mask_not_self[target_doc_index] = False
+    effective_scores = scores.copy()
+    effective_scores[~mask_not_self] = -np.inf
+    order = np.lexsort((hotel_ids_for_tie, -effective_scores))
+    top_indices = [di for di in order if di != target_doc_index][:top_k]
+
+    results = []
+    for di in top_indices:
+        if di in doc_index_to_row_index:
+            row_idx = doc_index_to_row_index[di]
+            results.append(_row_to_dict(hotels_df.iloc[row_idx], float(scores[di])))
+    return results
 
 def apply_filters(items: list[dict], f: dict):
     if not items: return []
