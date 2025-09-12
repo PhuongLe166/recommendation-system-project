@@ -19,8 +19,59 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Global CSS
+# Global CSS with fixed positioning
 inject_css()
+
+# Add CSS for fixed header only
+st.markdown("""
+<style>
+    /* Ensure sidebar stays fixed */
+    section[data-testid="stSidebar"] {
+        position: fixed;
+        top: 0;
+        height: 100vh;
+    }
+    
+    /* Make header sticky at the top */
+    .main-header {
+        position: fixed;
+        top: 0;
+        left: 21rem;
+        right: 0;
+        z-index: 999;
+        margin: 0;
+    }
+    
+    /* Add padding to prevent content from going under fixed header */
+    .main .block-container {
+        padding-top: 140px;
+    }
+    
+    /* Ensure main content has proper margin for sidebar */
+    .main {
+        margin-left: 21rem;
+    }
+    
+    /* Make filters panel sticky when scrolling */
+    div[data-testid="column"]:last-child > div:first-child {
+        position: sticky;
+        top: 150px;
+        max-height: calc(100vh - 170px);
+        overflow-y: auto;
+    }
+
+    /* Keep the search tabs sticky below the fixed header */
+    .stTabs {
+        position: sticky;
+        top: 140px; /* match header + container padding to avoid jump */
+        z-index: 998;
+        background: #f6f7fb;
+        padding-top: 0.5rem;
+        margin-top: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # --- State Management ---
 def init_session_state():
@@ -44,7 +95,7 @@ init_session_state()
 # --- Render Sidebar and get current page ---
 current_page = render_sidebar()
 
-# --- Header ---
+# --- Header (fixed at top) ---
 render_header()
 
 # --- Main Content Area based on current page ---
@@ -78,7 +129,7 @@ elif current_page == "Recommendation":
 
     hotels_df, id_map, d2v, d2v_sim, metrics = load_resources()
 
-    # --- Search Interface ---
+    # --- Search Interface (scrolls with content) ---
     search_result = render_search(hotels_df)
 
     # --- Process Search with Loading State ---
