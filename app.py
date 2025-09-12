@@ -2,6 +2,7 @@ import streamlit as st
 import time
 from theme import inject_css
 from components.header import render_header
+from components.sidebar import render_sidebar
 from components.search import render_search
 from components.filters import render_filters
 from components.results import render_results
@@ -15,7 +16,7 @@ st.set_page_config(
     page_title="Hotel Recommender System",
     page_icon="🏨",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 # Global CSS
@@ -31,6 +32,7 @@ def init_session_state():
         "last_query": "",
         "last_hotel_id": None,
         "processing": False,
+        "current_page": "Recommendation",
     }
     
     for key, value in defaults.items():
@@ -39,117 +41,134 @@ def init_session_state():
 
 init_session_state()
 
-# --- Load Resources ---
-@st.cache_resource(show_spinner=False)
-def load_resources():
-    """Load all resources with caching"""
-    try:
-        hotels_df = load_hotels_df()
-        id_map = load_id_mapping()
-        d2v = load_doc2vec_model()
-        d2v_sim = load_doc2vec_similarity()
-        metrics = load_metrics().get("methods", {}).get("doc2vec", {})
-        return hotels_df, id_map, d2v, d2v_sim, metrics
-    except Exception as e:
-        st.error(f"Lỗi nạp dữ liệu/model: {e}")
-        st.stop()
-
-hotels_df, id_map, d2v, d2v_sim, metrics = load_resources()
+# --- Render Sidebar and get current page ---
+current_page = render_sidebar()
 
 # --- Header ---
 render_header()
 
-# --- Search Interface ---
-search_result = render_search(hotels_df)
+# --- Main Content Area based on current page ---
+if current_page == "Business Problem":
+    # Business Problem Page - Just header
+    st.markdown("## 📊 Business Problem")
+    st.markdown("*Content for Business Problem will be added here*")
 
-# --- Process Search with Loading State ---
-processing_placeholder = st.empty()
+elif current_page == "Evaluation & Report":
+    # Evaluation & Report Page - Just header
+    st.markdown("## 📈 Evaluation & Report")
+    st.markdown("*Content for Evaluation & Report will be added here*")
 
-if search_result["query_submitted"] and search_result["query_text"]:
-    st.session_state.processing = True
+elif current_page == "Recommendation":
+    # Original Recommendation Page
     
-if search_result["similar_submitted"] and search_result["chosen_hotel_id"]:
-    st.session_state.processing = True
+    # --- Load Resources ---
+    @st.cache_resource(show_spinner=False)
+    def load_resources():
+        """Load all resources with caching"""
+        try:
+            hotels_df = load_hotels_df()
+            id_map = load_id_mapping()
+            d2v = load_doc2vec_model()
+            d2v_sim = load_doc2vec_similarity()
+            metrics = load_metrics().get("methods", {}).get("doc2vec", {})
+            return hotels_df, id_map, d2v, d2v_sim, metrics
+        except Exception as e:
+            st.error(f"Lỗi nạp dữ liệu/model: {e}")
+            st.stop()
 
-# Show processing message
-if st.session_state.processing:
-    with processing_placeholder.container():
-        with st.spinner("🔍 Đang xử lý..."):
-            time.sleep(1.0)  # Simulate processing
-            
-            if search_result["query_submitted"] and search_result["query_text"]:
-                results = search_by_query_doc2vec(
-                    search_result["query_text"], 
-                    d2v, 
-                    hotels_df, 
-                    id_map,
-                    top_k=20
-                )
-                st.session_state.all_recs = results
-                st.session_state.recs = []
-                st.session_state.last_query = search_result["query_text"]
-                st.session_state.last_hotel_id = None
+    hotels_df, id_map, d2v, d2v_sim, metrics = load_resources()
+
+    # --- Search Interface ---
+    search_result = render_search(hotels_df)
+
+    # --- Process Search with Loading State ---
+    processing_placeholder = st.empty()
+
+    if search_result["query_submitted"] and search_result["query_text"]:
+        st.session_state.processing = True
+        
+    if search_result["similar_submitted"] and search_result["chosen_hotel_id"]:
+        st.session_state.processing = True
+
+    # Show processing message
+    if st.session_state.processing:
+        with processing_placeholder.container():
+            with st.spinner("🔍 Đang xử lý..."):
+                time.sleep(1.0)  # Simulate processing
                 
-            elif search_result["similar_submitted"] and search_result["chosen_hotel_id"]:
-                results = similar_by_hotel_doc2vec(
-                    search_result["chosen_hotel_id"], 
-                    hotels_df, 
-                    d2v_sim, 
-                    id_map, 
-                    top_k=20
-                )
-                st.session_state.all_recs = results
-                st.session_state.recs = []
-                st.session_state.last_hotel_id = search_result["chosen_hotel_id"]
-                st.session_state.last_query = ""
-            
-            st.session_state.processing = False
-            st.rerun()
+                if search_result["query_submitted"] and search_result["query_text"]:
+                    results = search_by_query_doc2vec(
+                        search_result["query_text"], 
+                        d2v, 
+                        hotels_df, 
+                        id_map,
+                        top_k=20
+                    )
+                    st.session_state.all_recs = results
+                    st.session_state.recs = []
+                    st.session_state.last_query = search_result["query_text"]
+                    st.session_state.last_hotel_id = None
+                    
+                elif search_result["similar_submitted"] and search_result["chosen_hotel_id"]:
+                    results = similar_by_hotel_doc2vec(
+                        search_result["chosen_hotel_id"], 
+                        hotels_df, 
+                        d2v_sim, 
+                        id_map, 
+                        top_k=20
+                    )
+                    st.session_state.all_recs = results
+                    st.session_state.recs = []
+                    st.session_state.last_hotel_id = search_result["chosen_hotel_id"]
+                    st.session_state.last_query = ""
+                
+                st.session_state.processing = False
+                st.rerun()
 
-# --- Layout: Main + Filters on Right ---
-col_main, col_filters = st.columns([2.5, 1], gap="large")
+    # --- Layout: Main + Filters on Right ---
+    col_main, col_filters = st.columns([2.5, 1], gap="large")
 
-with col_main:
-    # Display results
-    display_recs = st.session_state.recs if st.session_state.recs else st.session_state.all_recs
-    total_all = len(st.session_state.all_recs)
-    
-    if display_recs:
-        st.markdown("""
-        <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .hotel-card {
-            animation: fadeIn 0.5s ease-out;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-    
-    render_results(
-        display_recs, 
-        st.session_state.filters, 
-        total_all=total_all
-    )
+    with col_main:
+        # Display results
+        display_recs = st.session_state.recs if st.session_state.recs else st.session_state.all_recs
+        total_all = len(st.session_state.all_recs)
+        
+        if display_recs:
+            st.markdown("""
+            <style>
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .hotel-card {
+                animation: fadeIn 0.5s ease-out;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+        
+        render_results(
+            display_recs, 
+            st.session_state.filters, 
+            total_all=total_all
+        )
 
-with col_filters:
-    # Always show filters
-    new_filters, action = render_filters(
-        st.session_state.filters,
-        active_count=count_active_filters(st.session_state.filters),
-    )
+    with col_filters:
+        # Always show filters
+        new_filters, action = render_filters(
+            st.session_state.filters,
+            active_count=count_active_filters(st.session_state.filters),
+        )
 
-    # Handle filter actions
-    if action == "apply":
-        st.session_state.filters = new_filters
-        if st.session_state.all_recs:
-            filtered = apply_filters(st.session_state.all_recs, st.session_state.filters)
-            st.session_state.recs = filtered
-            
-    elif action == "reset":
-        st.session_state.filters = DEFAULT_FILTERS.copy()
-        st.session_state.recs = []
+        # Handle filter actions
+        if action == "apply":
+            st.session_state.filters = new_filters
+            if st.session_state.all_recs:
+                filtered = apply_filters(st.session_state.all_recs, st.session_state.filters)
+                st.session_state.recs = filtered
+                
+        elif action == "reset":
+            st.session_state.filters = DEFAULT_FILTERS.copy()
+            st.session_state.recs = []
 
 # --- Footer ---
 st.markdown("---")
