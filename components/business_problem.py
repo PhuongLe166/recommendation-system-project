@@ -9,7 +9,8 @@ def render_business_problem():
 .ev-title { margin-bottom: 25px; font-size: 26px; font-weight: 600; color: #222; }
 .ev-section { margin-bottom: 35px; }
 .ev-h3 { font-size: 20px; font-weight: 600; margin: 6px 0 12px 0; border-bottom: 2px solid #e0e0e0; padding-bottom: 6px; color:#111827; }
-.ev-card { background: #ffffff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e9edf5; }
+.ev-card { position: relative; background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 12px 28px rgba(17,24,39,0.08); border: 1px solid #e9edf5; overflow: hidden; }
+.ev-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: linear-gradient(135deg,#667eea 0%, #764ba2 100%); }
 .ev-card p { margin: 6px 0; font-size: 15px; color:#1f2937; }
 .ev-card ul { margin: 8px 0 0 20px; padding: 0; }
 .ev-card ul li { margin-bottom: 6px; font-size: 15px; color:#374151; }
