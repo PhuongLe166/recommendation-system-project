@@ -1,5 +1,6 @@
 # recommender.py
 import re
+import hashlib
 import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
@@ -42,32 +43,48 @@ def _get_docvec(model: Doc2Vec, key):
     except KeyError:
         return model.dv[str(key)]
 
+def _infer_vec(model: Doc2Vec, tokens: list[str], epochs: int = 80, alpha: float = 0.025, seed_value: int | None = None):
+    """Deterministic infer_vector with temporary RNG seeding."""
+    if seed_value is None:
+        seed_value = 0
+    rng_state = model.random.get_state()
+    try:
+        model.random.seed(seed_value)
+        return model.infer_vector(tokens, epochs=epochs, alpha=alpha)
+    finally:
+        model.random.set_state(rng_state)
+
+def _stable_seed_from_text(text: str) -> int:
+    b = hashlib.sha256(text.encode("utf-8")).digest()[:4]
+    return int.from_bytes(b, "little")
+
+def _hotel_vector(model: Doc2Vec, row: pd.Series, doc_index_or_none):
+    """Return doc vector by tag if available; otherwise infer from description."""
+    if doc_index_or_none is not None:
+        return _get_docvec(model, doc_index_or_none)
+    desc_tokens = (row.get("Hotel_Description") or "").lower().split()
+    # dùng seed ổn định theo hotel_id để fallback cũng deterministic
+    seed_value = _stable_seed_from_text(str(row.get("Hotel_ID", "")))
+    return _infer_vec(model, desc_tokens, epochs=40, alpha=0.025, seed_value=seed_value)
+
 def search_by_query_doc2vec(query_text: str, model: Doc2Vec, hotels_df: pd.DataFrame, id_mapping: dict, top_k=20):
     tokens = preprocess_query(query_text)
     if not tokens:
         return []
 
-    # Deterministic inference by seeding RNG from the normalized query
+    # Deterministic inference by stable seed from normalized query
     seed_source = " ".join(tokens)
-    seed_value = abs(hash(seed_source)) % (2**32 - 1)
-    rng_state = model.random.get_state()
-    try:
-        model.random.seed(seed_value)
-        query_vector = model.infer_vector(tokens)
-    finally:
-        # Restore RNG so other parts of the app remain unaffected
-        model.random.set_state(rng_state)
+    seed_value = _stable_seed_from_text(seed_source)
+    query_vector = _infer_vec(model, tokens, epochs=80, alpha=0.025, seed_value=seed_value)
 
-    # Build document matrix aligned to hotels_df rows using the provided id mapping
+    # Build document matrix aligned to hotels_df rows, include ALL hotels
     doc_matrix = []
     valid_row_indices = []
     for row_index, row in hotels_df.iterrows():
-        hotel_id = row.get("Hotel_ID")
-        key = str(hotel_id)
-        if key not in id_mapping:
-            continue
-        doc_index = id_mapping[key]
-        doc_matrix.append(_get_docvec(model, doc_index))
+        hid_key = str(row.get("Hotel_ID"))
+        doc_index = id_mapping.get(hid_key) if hid_key in id_mapping else None
+        vec = _hotel_vector(model, row, doc_index)  # fallback if missing tag
+        doc_matrix.append(vec)
         valid_row_indices.append(row_index)
 
     if not doc_matrix:
@@ -76,9 +93,10 @@ def search_by_query_doc2vec(query_text: str, model: Doc2Vec, hotels_df: pd.DataF
     doc_matrix = np.asarray(doc_matrix)
     similarities = cosine_similarity([query_vector], doc_matrix).ravel()
 
-    # Stable ranking: sort by similarity desc, tie-break by Hotel_ID asc
-    hotel_ids_for_tie = hotels_df.loc[valid_row_indices, "Hotel_ID"].to_numpy()
-    order = np.lexsort((hotel_ids_for_tie, -similarities))  # ascending on -sim == desc on sim
+    # Stable ranking: sort by similarity desc, tie-break by numeric Hotel_ID asc
+    hid_series = pd.to_numeric(hotels_df.loc[valid_row_indices, "Hotel_ID"], errors="coerce")
+    hotel_ids_for_tie = hid_series.fillna(10**12).astype(np.int64).to_numpy()
+    order = np.lexsort((hotel_ids_for_tie, -similarities))  # primary: -sim, tie: Hotel_ID asc
     top_order = order[:top_k]
 
     results = []
@@ -94,31 +112,31 @@ def similar_by_hotel_doc2vec(hotel_id, hotels_df, sim_matrix, id_mapping, top_k=
         return []
 
     target_doc_index = id_mapping[key]
-    scores = sim_matrix[target_doc_index]
+    scores = np.asarray(sim_matrix[target_doc_index]).ravel()  # ensure 1D
 
     # Build mapping from doc index -> row index for correct alignment
     doc_index_to_row_index = {}
-    hotel_ids_in_doc_order = []
     for row_index, row in hotels_df.iterrows():
         hid = str(row.get("Hotel_ID"))
         if hid in id_mapping:
             di = id_mapping[hid]
             doc_index_to_row_index[di] = row_index
-    # Prepare hotel ids array aligned to scores indices for tie-breaks; fill with large values if missing
+
+    # Prepare hotel ids array aligned to 'scores' indices for tie-breaks
     max_hid = int(1e12)
     hotel_ids_for_tie = np.full_like(scores, fill_value=max_hid, dtype=np.int64)
+    # vector hoá để lấy Hotel_ID dạng số nếu có
+    # (vì cần theo doc index, đi từng phần tử)
     for di, row_index in doc_index_to_row_index.items():
         try:
-            hotel_ids_for_tie[di] = int(hotels_df.iloc[row_index]["Hotel_ID"])
+            hid_val = pd.to_numeric(hotels_df.iloc[row_index]["Hotel_ID"], errors="coerce")
+            hotel_ids_for_tie[di] = int(hid_val) if pd.notna(hid_val) else max_hid
         except Exception:
-            # Fallback keeps max value, ensuring missing ones go last on ties
             pass
 
     # Exclude self, sort by score desc with stable tie-break on Hotel_ID asc
-    mask_not_self = np.ones_like(scores, dtype=bool)
-    mask_not_self[target_doc_index] = False
     effective_scores = scores.copy()
-    effective_scores[~mask_not_self] = -np.inf
+    effective_scores[target_doc_index] = -np.inf  # exclude self
     order = np.lexsort((hotel_ids_for_tie, -effective_scores))
     top_indices = [di for di in order if di != target_doc_index][:top_k]
 
