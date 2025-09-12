@@ -8,6 +8,7 @@ from components.filters import render_filters
 from components.results import render_results
 from components.evaluation import render_evaluation
 from data import load_hotels_df, load_id_mapping, load_metrics, load_doc2vec_model, load_doc2vec_similarity
+from components.business_problem import render_business_problem
 from recommender import (
     DEFAULT_FILTERS, apply_filters, count_active_filters,
     search_by_query_doc2vec, similar_by_hotel_doc2vec
@@ -136,9 +137,7 @@ render_header()
 
 # --- Main Content Area based on current page ---
 if current_page == "Business Problem":
-    # Business Problem Page - Just header
-    st.markdown("## 📊 Business Problem")
-    st.markdown("*Content for Business Problem will be added here*")
+    render_business_problem()
 
 elif current_page == "Evaluation & Report":
     # Evaluation & Report Page
@@ -255,6 +254,7 @@ elif current_page == "Recommendation":
         elif action == "reset":
             st.session_state.filters = DEFAULT_FILTERS.copy()
             st.session_state.recs = []
+
 
 # --- Footer ---
 st.markdown("---")
