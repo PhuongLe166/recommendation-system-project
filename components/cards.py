@@ -1,9 +1,6 @@
 # components/cards.py
 # --------------------------------------------
-# Card layout cố định kích thước + vị trí từng phần
-# - Dùng CSS Grid với các hàng cố định
-# - Ẩn có giữ chỗ (visibility:hidden) để layout không nhảy
-# - Dùng st.components.v1.html để render HTML chuẩn
+# Fixed-size card layout
 # --------------------------------------------
 
 import streamlit as st
@@ -13,25 +10,25 @@ from streamlit.components.v1 import html as st_html
 
 # --------- Helpers ---------
 def _infer_tags(hotel: dict) -> List[str]:
-    """Suy luận tag đơn giản từ mô tả."""
+    """Simple tag inference from description."""
     tags: List[str] = []
     desc = (hotel.get("desc", "") or "").lower()
 
-    if any(w in desc for w in ["beach", "biển", "sea", "ocean", "coastal"]):
-        tags.append("🏖️ Gần biển")
+    if any(w in desc for w in ["beach", "sea", "ocean", "coastal"]):
+        tags.append("🏖️ Near beach")
     if any(w in desc for w in ["spa", "massage", "wellness", "relax"]):
         tags.append("💆 Spa")
     if any(w in desc for w in ["gym", "fitness", "workout"]):
         tags.append("💪 Gym")
     if any(w in desc for w in ["family", "kids", "children", "playground"]):
-        tags.append("👨‍👩‍👧‍👦 Gia đình")
+        tags.append("👨‍👩‍👧‍👦 Family")
 
     # Tối đa 4 tag
     return tags[:4]
 
 
 def _pct10(score) -> float:
-    """Quy đổi thang 0-10 sang % (0-100) an toàn."""
+    """Convert 0-10 scale to percent (0-100)."""
     try:
         x = float(score)
     except Exception:
@@ -54,15 +51,14 @@ def _safe_int(v, default=0) -> int:
 
 
 def _line_clamp_html(text: str) -> str:
-    # Không cắt ở Python để giữ full text; CSS sẽ clamp theo dòng
-    return (text or "").strip() or "Không có mô tả."
+    return (text or "").strip() or "No description."
 
 
 # --------- Card Renderer ---------
 def _render_card(hotel: dict, index: int) -> None:
-    """Render một hotel card với layout cố định."""
+    """Render one hotel card with fixed layout."""
 
-    # Extract an toàn
+    # Safe extract
     name = hotel.get("name", "Unknown Hotel")
     stars = _safe_int(hotel.get("stars"), 0)
     similarity = _safe_float(hotel.get("similarity"), 0.0)
@@ -83,7 +79,7 @@ def _render_card(hotel: dict, index: int) -> None:
     # Class ẩn nhưng giữ chỗ (visibility:hidden)
     stars_class = "hc-stars" if stars > 0 else "hc-stars hc-hide"
     tags_class = "hc-tags" if tags else "hc-tags hc-hide"
-    comments_html = f" • 💬 {comments} đánh giá" if comments > 0 else ""
+    comments_html = f" • 💬 {comments} reviews" if comments > 0 else ""
 
     # HTML + CSS (không thụt đầu dòng để tránh Markdown coi là code)
     html = f"""
@@ -162,9 +158,9 @@ def _render_card(hotel: dict, index: int) -> None:
   <div class="hc-header">
     <div style="max-width:72%;">
       <h3 class="hc-title">{index}. {name}</h3>
-      <div class="{stars_class}">{'⭐' * stars} ({stars} sao)</div>
+      <div class="{stars_class}">{'⭐' * stars} ({stars} stars)</div>
     </div>
-    <div class="hc-badge">{match_score}% phù hợp</div>
+    <div class="hc-badge">{match_score}% match</div>
   </div>
 
   <!-- 2) Meta -->
@@ -177,20 +173,20 @@ def _render_card(hotel: dict, index: int) -> None:
   <div class="{tags_class}">{tags_html}</div>
 
   <!-- 5) Label -->
-  <div class="hc-label">Đánh giá chi tiết:</div>
+  <div class="hc-label">Detailed scores:</div>
 
   <!-- 6) Progress bars -->
   <div class="hc-grid">
     <div>
-      <div class="hc-rowlbl"><span>Vị trí</span><span>{loc:.1f}</span></div>
+      <div class="hc-rowlbl"><span>Location</span><span>{loc:.1f}</span></div>
       <div class="hc-bar"><div class="hc-fill" style="width:{_pct10(loc)}%"></div></div>
     </div>
     <div>
-      <div class="hc-rowlbl"><span>Sạch sẽ</span><span>{clean:.1f}</span></div>
+      <div class="hc-rowlbl"><span>Cleanliness</span><span>{clean:.1f}</span></div>
       <div class="hc-bar"><div class="hc-fill" style="width:{_pct10(clean)}%"></div></div>
     </div>
     <div>
-      <div class="hc-rowlbl"><span>Dịch vụ</span><span>{serv:.1f}</span></div>
+      <div class="hc-rowlbl"><span>Service</span><span>{serv:.1f}</span></div>
       <div class="hc-bar"><div class="hc-fill" style="width:{_pct10(serv)}%"></div></div>
     </div>
   </div>
@@ -198,7 +194,7 @@ def _render_card(hotel: dict, index: int) -> None:
   <!-- 7) Total -->
   <div class="hc-total">
     <div class="hc-total-inner">
-      <span style="font-size:14px; color:#6b7280;">Điểm tổng</span>
+      <span style="font-size:14px; color:#6b7280;">Total score</span>
       <span class="val">{total:.1f}/10</span>
     </div>
   </div>
@@ -214,7 +210,7 @@ def render_cards_grid(hotels: List[dict]) -> None:
     if not hotels:
         return
 
-    st.markdown("### 📋 Danh sách khách sạn được khuyến nghị")
+    st.markdown("### 📋 Recommended hotels")
 
     for i in range(0, len(hotels), 2):
         col1, col2 = st.columns(2, gap="medium")

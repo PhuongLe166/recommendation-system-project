@@ -3,15 +3,15 @@ import plotly.express as px
 import pandas as pd
 
 def render_scatter(df: pd.DataFrame):
-    st.markdown("### 📊 Phân bố điểm số")
+    st.markdown("### 📊 Score distribution")
     fig = px.scatter(
         df,
-        x="Điểm tổng",
-        y="Độ tương đồng (%)",
-        size="Hạng sao",
-        color="Hạng sao",
+        x="Total Score",
+        y="Similarity (%)",
+        size="Star Rating",
+        color="Star Rating",
         hover_data=["name","price"],
-        title="Scatter: Độ tương đồng (%) vs. Điểm tổng • kích thước ~ hạng sao",
+        title="Scatter: Similarity (%) vs. Total Score • size ~ star rating",
         color_continuous_scale="viridis",
         size_max=30,
     )

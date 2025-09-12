@@ -3,64 +3,25 @@ import pandas as pd
 import os, json, base64
 
 def render_evaluation():
-    st.markdown("""
-        <h1 class='ev-title'>Evaluation & Report</h1>
-    """, unsafe_allow_html=True)
+    st.header("Evaluation & Report")
 
-    # --- Inject page-specific CSS (inspired by provided design) ---
+    # Minimal CSS to wrap each image in a bordered card with shadow
     st.markdown(
         """
         <style>
-        .ev-title { margin-bottom: 25px; font-size: 26px; font-weight: 600; color: #222; }
-
-        .ev-table {
-            background: #ffffff; border: 1px solid #e9edf5; border-radius: 12px;
-            padding: 14px 14px 8px 14px; box-shadow: 0 8px 22px rgba(17,24,39,0.08);
-            margin-bottom: 18px;
-        }
-        .ev-table h3 { margin: 4px 6px 10px 6px; color: #1f2937; }
-        .ev-table table { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; }
-        .ev-table thead th {
-            background: #1abc9c; color: white; text-align: center; padding: 10px;
-        }
-        .ev-table tbody td { text-align: center; padding: 10px; border-bottom: 1px solid #eef2ff; }
-        .ev-table tbody tr:nth-child(even) td { background: #fbfdff; }
-
-        .ev-charts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .ev-img-card { background:#ffffff; border:1px solid #e9edf5; border-radius:12px; padding:10px; box-shadow:0 8px 22px rgba(17,24,39,0.06); }
-        .ev-img { width:100%; height: var(--img-h, 240px); object-fit: contain; background:#fff; border-radius:8px; }
-        .ev-caption { text-align:center; color:#6b7280; font-size:0.9rem; margin-top:6px }
-        
-        /* New style matching index.html */
-        .ev-section { margin-bottom: 35px; }
-        .ev-h3 { font-size: 20px; font-weight: 600; margin: 6px 0 12px 0; border-bottom: 2px solid #e0e0e0; padding-bottom: 6px; color:#111827; }
-        .ev-card { background: #ffffff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .ev-table table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 15px; }
-        .ev-table th, .ev-table td { padding: 12px; text-align: center; }
-        .ev-table th { background: #1976d2; color: #ffffff; font-weight: 600; }
-        .ev-table tr:nth-child(even) td { background: #f9f9f9; }
-        .ev-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-        .ev-chart-card { background: #ffffff; border-radius: 10px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
-        .ev-chart-card h4 { font-size: 15px; margin-bottom: 12px; color: #444; font-weight: 500; }
-        .ev-chart-card img { width: 100%; border-radius: 8px; }
+        :root { --card-img-h: 230px; }
+        .img-card { background:#ffffff; border:1px solid #e9edf5; border-radius:12px; padding:10px; box-shadow:0 4px 14px rgba(17,24,39,0.08); }
+        .img-card .img-wrap { height: var(--card-img-h); display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:8px; }
+        .img-card img { width:100%; height:100%; object-fit: contain; display:block; }
+        .img-card .img-cap { text-align:center; color:#6b7280; font-size:0.9rem; margin-top:6px; height:24px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
     def _render_subtitle(title: str, icon: str | None = None, anchor: str | None = None):
-        icon_html = f"<span class='ev-subtitle-icon'>{icon}</span>" if icon else ""
-        anchor_html = f"<a class='ev-subtitle-anchor' href='#{anchor}'>↪</a>" if anchor else ""
-        st.markdown(
-            f"""
-            <div class='ev-subtitle' id='{anchor or ''}'>
-                {icon_html}
-                <span class='ev-subtitle-text'>{title}</span>
-                {anchor_html}
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        prefix = f"{icon} " if icon else ""
+        st.subheader(prefix + title)
 
     # --- Load metrics ---
     try:
@@ -87,29 +48,8 @@ def render_evaluation():
         }
         for m, v in methods.items()
     ])
-    # --- Styled comparison table ---
-    headers = ["Method", "Build Time (s)", "Precision@5", "MAP", "Correlation"]
-    rows_html = "".join([
-        f"<tr>"
-        f"<td>{row['Method']}</td>"
-        f"<td>{row['Build Time (s)']:.2f}</td>"
-        f"<td>{row['Precision@5']:.2f}</td>"
-        f"<td>{row['MAP']:.2f}</td>"
-        f"<td>{row['Correlation']:.2f}</td>"
-        f"</tr>" for _, row in df_metrics.iterrows()
-    ])
-    table_html = (
-        "<div class='ev-section'>"
-        "<h3 class='ev-h3'>So sánh các mô hình</h3>"
-        "<div class='ev-card ev-table'>"
-        "<table>"
-        "<thead><tr>" + "".join([f"<th>{h}</th>" for h in headers]) + "</tr></thead>"
-        "<tbody>" + rows_html + "</tbody>"
-        "</table>"
-        "</div>"
-        "</div>"
-    )
-    st.markdown(table_html, unsafe_allow_html=True)
+    st.subheader("Model comparison")
+    st.dataframe(df_metrics, use_container_width=True, hide_index=True)
 
     # --- Chọn lọc ảnh chính ---
     img_dir = "hotel_ui_data/images"
@@ -120,55 +60,68 @@ def render_evaluation():
     ]
 
     if os.path.exists(img_dir):
-        # Section: Main charts
-        charts_html = ["<div class='ev-section'>", "<h3 class='ev-h3'>Biểu đồ minh họa</h3>", "<div class='ev-charts'>"]
-        for filename, caption in selected_images:
-            path = os.path.join(img_dir, filename)
-            if os.path.exists(path):
-                try:
-                    with open(path, "rb") as f:
-                        b64 = base64.b64encode(f.read()).decode()
-                    charts_html.append(f"<div class='ev-chart-card'><h4>{caption}</h4><img src='data:image/png;base64,{b64}' /></div>")
-                except Exception:
-                    charts_html.append(f"<div class='ev-chart-card'><h4>{caption}</h4></div>")
-        charts_html.append("</div></div>")
-        st.markdown("".join(charts_html), unsafe_allow_html=True)
-
-        # --- Similarity distributions for 3 models ---
-        def _card(img_path: str, caption: str):
+        # Helper to render an image inside a styled card
+        def _card_from_path(img_path: str, caption: str) -> str:
             try:
                 with open(img_path, "rb") as f:
                     b64 = base64.b64encode(f.read()).decode()
-                return f"<div class='ev-chart-card'><h4>{caption}</h4><img src='data:image/png;base64,{b64}' /></div>"
+                return f"""
+<div class=\"img-card\">
+  <div class=\"img-wrap\"><img src=\"data:image/png;base64,{b64}\" /></div>
+  <div class=\"img-cap\">{caption}</div>
+</div>
+"""
             except Exception:
-                return f"<div class='ev-chart-card'><h4>{caption}</h4></div>"
+                return ""
+
+        # Section: Main charts
+        st.subheader("Illustration charts")
+        cols = st.columns(3)
+        idx = 0
+        for filename, caption in selected_images:
+            path = os.path.join(img_dir, filename)
+            if os.path.exists(path):
+                html = _card_from_path(path, caption)
+                if html:
+                    with cols[idx % len(cols)]:
+                        st.markdown(html, unsafe_allow_html=True)
+                    idx += 1
+
+        # --- Similarity distributions for 3 models ---
+        def _show_card(img_path: str, caption: str):
+            html = _card_from_path(img_path, caption)
+            if html:
+                st.markdown(html, unsafe_allow_html=True)
 
         sim_images = [
             ("tfidf_similarity_distribution.png", "TF-IDF Similarity Distribution"),
             ("gensim_similarity_distribution.png", "LSI (Gensim) Similarity Distribution"),
             ("doc2vec_similarity_distribution.png", "Doc2Vec Similarity Distribution"),
         ]
-        sim_html = ["<div class='ev-section'>", "<h3 class='ev-h3'>Phân phối độ tương đồng theo mô hình</h3>", "<div class='ev-charts'>"]
+        st.subheader("Similarity distributions by model")
+        cols2 = st.columns(3)
+        i2 = 0
         for filename, caption in sim_images:
             path = os.path.join(img_dir, filename)
             if os.path.exists(path):
-                sim_html.append(_card(path, caption))
-        sim_html.append("</div></div>")
-        st.markdown("".join(sim_html), unsafe_allow_html=True)
+                with cols2[i2 % len(cols2)]:
+                    _show_card(path, caption)
+                i2 += 1
 
         # --- Wordclouds for 3 models ---
-        # Wordclouds
         wc_images = [
             ("tfidf_wordcloud.png", "TF-IDF Wordcloud"),
             ("gensim_wordcloud.png", "LSI (Gensim) Wordcloud"),
             ("doc2vec_wordcloud.png", "Doc2Vec Wordcloud"),
         ]
-        wc_html = ["<div class='ev-section'>", "<h3 class='ev-h3'>Wordcloud theo mô hình</h3>", "<div class='ev-charts'>"]
+        st.subheader("Wordclouds by model")
+        cols3 = st.columns(3)
+        i3 = 0
         for filename, caption in wc_images:
             path = os.path.join(img_dir, filename)
             if os.path.exists(path):
-                wc_html.append(_card(path, caption))
-        wc_html.append("</div></div>")
-        st.markdown("".join(wc_html), unsafe_allow_html=True)
+                with cols3[i3 % len(cols3)]:
+                    _show_card(path, caption)
+                i3 += 1
     else:
-        st.warning("⚠️ Chưa tìm thấy thư mục images, hãy chạy lại bước save plots.")
+        st.warning("⚠️ Images folder not found. Please re-run the plot export step.")

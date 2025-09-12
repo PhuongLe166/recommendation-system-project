@@ -1,92 +1,39 @@
 import streamlit as st
-from textwrap import dedent
-import re
 
 def render_business_problem():
-    html = dedent("""
-<style>
-/* Match Evaluation page palette and card layout */
-.ev-title { margin-bottom: 25px; font-size: 26px; font-weight: 600; color: #222; }
-.ev-section { margin-bottom: 35px; }
-.ev-h3 { font-size: 20px; font-weight: 600; margin: 6px 0 12px 0; border-bottom: 2px solid #e0e0e0; padding-bottom: 6px; color:#111827; }
-.ev-card { position: relative; background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 12px 28px rgba(17,24,39,0.08); border: 1px solid #e9edf5; overflow: hidden; }
-.ev-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: linear-gradient(135deg,#667eea 0%, #764ba2 100%); }
-.ev-card p { margin: 6px 0; font-size: 15px; color:#1f2937; }
-.ev-card ul { margin: 8px 0 0 20px; padding: 0; }
-.ev-card ul li { margin-bottom: 6px; font-size: 15px; color:#374151; }
-</style>
+    st.header("Business Problem")
 
-<h1 class="ev-title">Business Problem</h1>
+    st.subheader("1. Context")
+    st.write(
+        "Agoda is a global online travel platform offering hotels, resorts, apartments, and homestays at competitive prices. "
+        "Users can easily search, compare, and book rooms. However, choosing among thousands of hotels remains challenging, "
+        "especially as each customer has very different preferences."
+    )
 
-<div class="ev-section">
-  <h3 class="ev-h3">1. Bối cảnh</h3>
-  <div class="ev-card">
-    <p>
-      Agoda là nền tảng đặt phòng trực tuyến toàn cầu, cung cấp dịch vụ khách sạn, resort, căn hộ, homestay với mức giá cạnh tranh.
-      Người dùng có thể dễ dàng tìm kiếm, so sánh và đặt phòng. Tuy nhiên, việc lựa chọn giữa hàng nghìn khách sạn
-      vẫn là một thách thức lớn, đặc biệt khi nhu cầu của mỗi khách hàng rất đa dạng.
-    </p>
-  </div>
-  
-</div>
+    st.subheader("2. Challenges")
+    st.markdown(
+        "- Users spend too much time filtering for suitable hotels.\n"
+        "- Traditional filters (price, stars, location) are not enough to reflect true preferences.\n"
+        "- Hoteliers lack behavioral analytics, leading to suboptimal service and marketing strategies."
+    )
 
-<div class="ev-section">
-  <h3 class="ev-h3">2. Thách thức</h3>
-  <div class="ev-card">
-    <ul>
-      <li>Người dùng mất nhiều thời gian để lọc khách sạn phù hợp với nhu cầu cá nhân.</li>
-      <li>Các bộ lọc truyền thống (giá, sao, địa điểm) chưa đủ để phản ánh sở thích thực sự.</li>
-      <li>Chủ khách sạn thiếu dữ liệu phân tích hành vi, dẫn đến chiến lược dịch vụ và marketing chưa tối ưu.</li>
-    </ul>
-  </div>
-</div>
+    st.subheader("3. Business goals")
+    st.write("For customers:")
+    st.markdown("- Save time searching.\n- Receive personalized hotel recommendations based on descriptions, preferences, and past experiences.")
+    st.write("For hotels/enterprises:")
+    st.markdown("- Understand customer behavior to improve services.\n- Increase conversion from search → booking.\n- Improve satisfaction and loyalty.")
 
-<div class="ev-section">
-  <h3 class="ev-h3">3. Mục tiêu kinh doanh</h3>
-  <div class="ev-card">
-    <p><strong>Đối với khách hàng:</strong></p>
-    <ul>
-      <li>Tiết kiệm thời gian tìm kiếm.</li>
-      <li>Nhận gợi ý khách sạn cá nhân hóa dựa trên mô tả, sở thích và trải nghiệm trước đó.</li>
-    </ul>
-    <p><strong>Đối với chủ khách sạn/doanh nghiệp:</strong></p>
-    <ul>
-      <li>Hiểu rõ hành vi khách hàng để cải thiện dịch vụ.</li>
-      <li>Tăng tỷ lệ chuyển đổi từ tìm kiếm → đặt phòng.</li>
-      <li>Gia tăng sự hài lòng và lòng trung thành của khách hàng.</li>
-    </ul>
-  </div>
-</div>
+    st.subheader("4. Proposed solution")
+    st.markdown(
+        "- Build a Recommender System based on Content-Based Filtering (TF-IDF, Gensim, Doc2Vec).\n"
+        "- Combine hotel descriptions, reviews, amenities, and user behavior data.\n"
+        "- Support intelligent search: by text description and by similar hotels.\n"
+        "- Provide a clear interface with sidebar filters and results table."
+    )
 
-<div class="ev-section">
-  <h3 class="ev-h3">4. Giải pháp đề xuất</h3>
-  <div class="ev-card">
-    <ul>
-      <li>Xây dựng <strong>Recommender System</strong> dựa trên Content-Based Filtering (TF-IDF, Gensim, Doc2Vec).</li>
-      <li>Kết hợp dữ liệu mô tả khách sạn, đánh giá, tiện ích và hành vi khách hàng.</li>
-      <li>Cho phép tìm kiếm thông minh:
-        <ul>
-          <li>Tìm theo mô tả (VD: <em>"spa, luxury beach resort, family hotel"</em>).</li>
-          <li>Tìm theo khách sạn tương tự.</li>
-        </ul>
-      </li>
-      <li>Cung cấp giao diện trực quan với sidebar filter và bảng kết quả.</li>
-    </ul>
-  </div>
-</div>
-
-<div class="ev-section">
-  <h3 class="ev-h3">5. Kỳ vọng kết quả</h3>
-  <div class="ev-card">
-    <ul>
-      <li><strong>Khách hàng:</strong> nhanh chóng tìm được khách sạn phù hợp, trải nghiệm cá nhân hóa.</li>
-      <li><strong>Doanh nghiệp:</strong> hiểu rõ khách hàng, tối ưu chiến lược kinh doanh, tăng tỷ lệ đặt phòng.</li>
-      <li><strong>Hệ thống:</strong> trở thành công cụ phân tích dữ liệu và hỗ trợ ra quyết định.</li>
-    </ul>
-  </div>
-</div>
-""")
-    # Remove any leading indentation on each line to prevent Markdown from
-    # interpreting the block as code (4-space indented lines become code blocks)
-    html_no_indent = re.sub(r'^[ \t]+', '', html, flags=re.MULTILINE)
-    st.markdown(html_no_indent, unsafe_allow_html=True)
+    st.subheader("5. Expected outcomes")
+    st.markdown(
+        "- Customers: quickly find suitable hotels with personalized experiences.\n"
+        "- Business: understand customers, optimize strategy, and increase bookings.\n"
+        "- System: become a useful analytics and decision-support tool."
+    )

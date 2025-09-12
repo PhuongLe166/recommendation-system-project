@@ -25,7 +25,7 @@ def render_search(hotels_df: pd.DataFrame):
     # </div>
     # """, unsafe_allow_html=True)
     
-    tab1, tab2 = st.tabs(["🔍 Tìm theo mô tả", "🏨 Tìm theo khách sạn tương tự"])
+    tab1, tab2 = st.tabs(["🔍 Search by description", "🏨 Search by similar hotel"])
     
     with tab1:
         # Query search - single row layout
@@ -33,9 +33,9 @@ def render_search(hotels_df: pd.DataFrame):
         
         with col_input:
             query_text = st.text_input(
-                "Mô tả khách sạn lý tưởng của bạn",
+                "Describe your ideal hotel",
                 placeholder="spa, luxury beach resort, family hotel...",
-                help="Nhập mô tả chi tiết về khách sạn bạn muốn tìm",
+                help="Enter a detailed description of what you're looking for",
                 key="search_query_input",
                 label_visibility="collapsed"
             )
@@ -50,7 +50,7 @@ def render_search(hotels_df: pd.DataFrame):
         
         # Show last query if exists
         if st.session_state.get("last_query"):
-            st.caption(f"🔍 Tìm kiếm gần nhất: *{st.session_state.last_query}*")
+            st.caption(f"🔍 Last search: *{st.session_state.last_query}*")
     
     with tab2:
         # Similar hotels - single row layout
@@ -58,14 +58,14 @@ def render_search(hotels_df: pd.DataFrame):
         
         with col_select:
             # Hotel selection dropdown
-            hotel_options = [("", "-- Chọn một khách sạn --")]
+            hotel_options = [("", "-- Select a hotel --")]
             hotel_options.extend([
                 (row["Hotel_ID"], f"{row['Hotel_Name']} (ID: {row['Hotel_ID']})")
                 for _, row in hotels_df.iterrows()
             ])
             
             selected = st.selectbox(
-                "Chọn khách sạn để tìm các khách sạn tương tự",
+                "Choose a hotel to find similar ones",
                 options=hotel_options,
                 format_func=lambda x: x[1],
                 key="hotel_selector_input",
@@ -89,15 +89,15 @@ def render_search(hotels_df: pd.DataFrame):
                 None
             )
             if last_hotel_name:
-                st.caption(f"🏨 Đã chọn gần nhất: *{last_hotel_name.split(' (ID:')[0]}*")
+                st.caption(f"🏨 Last selected: *{last_hotel_name.split(' (ID:')[0]}*")
 
     # Check for empty inputs after button clicks
     if query_submitted and not query_text.strip():
-        st.warning("⚠️ Vui lòng nhập mô tả khách sạn để tìm kiếm!")
+        st.warning("⚠️ Please enter a hotel description to search!")
         query_submitted = False
     
     if similar_submitted and not chosen_hotel_id:
-        st.warning("⚠️ Vui lòng chọn một khách sạn để tìm khách sạn tương tự!")
+        st.warning("⚠️ Please select a hotel to find similar ones!")
         similar_submitted = False
 
     return {

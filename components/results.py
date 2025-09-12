@@ -10,11 +10,11 @@ from components.charts import render_scatter
 
 def _build_chart_df(recs: List[Dict]) -> pd.DataFrame:
     """
-    Chuẩn hoá dữ liệu cho biểu đồ scatter:
-      - Cột 'Điểm tổng'
-      - Cột 'Độ tương đồng (%)'
-      - Cột 'Hạng sao'
-      - Thêm 'name' và 'price' để hover trong chart
+    Normalize data for scatter chart:
+      - Column 'Total Score'
+      - Column 'Similarity (%)'
+      - Column 'Star Rating'
+      - Keep 'name' and 'price' for hover
     """
     rows = []
     for r in recs:
@@ -22,15 +22,15 @@ def _build_chart_df(recs: List[Dict]) -> pd.DataFrame:
         stars = r.get("stars", 0) or 0
         total = r.get("total", 0.0) or 0.0
         sim_pct = (r.get("similarity", 0.0) or 0.0) * 100.0
-        price = "2.000.000 ₫" if stars >= 4 else "1.200.000 ₫"
+        price = "$200" if stars >= 4 else "$120"
 
         rows.append(
             {
                 "name": name,
                 "price": price,
-                "Điểm tổng": float(total),
-                "Độ tương đồng (%)": float(sim_pct),
-                "Hạng sao": float(stars),
+                "Total Score": float(total),
+                "Similarity (%)": float(sim_pct),
+                "Star Rating": float(stars),
             }
         )
     return pd.DataFrame(rows)
@@ -43,33 +43,33 @@ def render_results(
     show_chart: bool = True,
 ) -> None:
     """
-    Render toàn bộ khu vực col_main:
-      1) Banner tóm tắt kết quả
-      2) Lưới thẻ khách sạn (cards)
-      3) Biểu đồ scatter (nếu đủ dữ liệu)
+    Render the main area:
+      1) Results banner
+      2) Cards grid
+      3) Scatter chart (if enough data)
 
     Params
     ------
-    recs: list các khách sạn đã sẵn sàng hiển thị (đã lọc nếu có)
-    filters: dict bộ lọc hiện hành (để tính số filter đang bật)
-    total_all: tổng ứng viên ban đầu (để hiển thị câu 'từ X ứng viên ban đầu')
-    show_chart: có hiển thị biểu đồ không (mặc định True)
+    recs: list of hotels ready to display
+    filters: active filters dict
+    total_all: total initial candidates (for banner)
+    show_chart: whether to show chart (default True)
     """
     if not recs:
-        st.info("Hãy nhập mô tả hoặc chọn khách sạn và nhấn tìm kiếm để bắt đầu.")
+        st.info("Enter a description or pick a hotel and click search to start.")
         return
 
     shown = len(recs)
     active_n = count_active_filters(filters)
 
-    # Banner tóm tắt
+    # Summary banner
     if total_all is not None and total_all >= shown:
         st.success(
-            f"✅ **{shown} khách sạn** sau khi áp dụng **{active_n} bộ lọc** "
-            f"(từ {total_all} ứng viên ban đầu)"
+            f"✅ **{shown} hotels** after applying **{active_n} filters** "
+            f"(from {total_all} initial candidates)"
         )
     else:
-        st.success(f"✅ **{shown} khách sạn** sau khi áp dụng **{active_n} bộ lọc**")
+        st.success(f"✅ **{shown} hotels** after applying **{active_n} filters**")
 
     # Cards grid
     render_cards_grid(recs)
@@ -79,4 +79,4 @@ def render_results(
         df_chart = _build_chart_df(recs)
         render_scatter(df_chart)
     elif show_chart and len(recs) > 0:
-        st.caption("📊 Cần ≥ 3 khách sạn để hiển thị biểu đồ phân bố.")
+        st.caption("📊 Need ≥ 3 hotels to display the distribution chart.")
