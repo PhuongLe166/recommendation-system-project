@@ -22,54 +22,81 @@ st.set_page_config(
 # Global CSS with fixed positioning
 inject_css()
 
-# Add CSS for fixed header only
 st.markdown("""
 <style>
     /* Ensure sidebar stays fixed */
-    section[data-testid="stSidebar"] {
-        position: fixed;
-        top: 0;
-        height: 100vh;
-    }
-    
-    /* Make header sticky at the top */
-    .main-header {
-        position: fixed;
-        top: 0;
-        left: 21rem;
-        right: 0;
-        z-index: 999;
-        margin: 0;
-    }
-    
-    /* Add padding to prevent content from going under fixed header */
-    .main .block-container {
-        padding-top: 140px;
-    }
-    
-    /* Ensure main content has proper margin for sidebar */
-    .main {
-        margin-left: 21rem;
-    }
-    
-    /* Make filters panel sticky when scrolling */
+    section[data-testid="stSidebar"] { position: fixed; top: 0; height: 100vh; }
+
+    /* Sticky header */
+    .main-header { position: fixed; top: 0; left: 21rem; right: 0; z-index: 999; margin: 0; }
+
+    /* Prevent overlap */
+    .main .block-container { padding-top: 140px; padding-right: 420px; }
+    .main { margin-left: 21rem; }
+
+    /* Fixed filters column */
     div[data-testid="column"]:last-child > div:first-child {
-        position: sticky;
-        top: 150px;
-        max-height: calc(100vh - 170px);
-        overflow-y: auto;
+        position: fixed; top: 150px; right: 24px; width: 360px;
+        max-height: calc(100vh - 170px); overflow-y: auto; padding: 0; z-index: 997;
+    }
+    /* Filter card */
+    div[data-testid="column"]:last-child > div:first-child > div {
+        background: #ffffff; border: 1px solid #e9edf5; border-radius: 16px;
+        padding: 18px 18px 12px 18px; box-shadow: 0 12px 28px rgba(17,24,39,0.08);
+        position: relative; overflow: hidden;
+    }
+    /* Accent bar */
+    div[data-testid="column"]:last-child > div:first-child > div::after {
+        content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px;
+        background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
     }
 
-    /* Keep the search tabs sticky below the fixed header */
-    .stTabs {
-        position: sticky;
-        top: 140px; /* match header + container padding to avoid jump */
-        z-index: 998;
-        background: #f6f7fb;
-        padding-top: 0.5rem;
-        margin-top: 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    /* Filters header */
+    .filters-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: .5rem; }
+    .filters-title { font-weight: 800; font-size: 1.1rem; color:#0f172a; }
+    .filters-badge { background: rgba(102,126,234,.12); color:#4f46e5; border:1px solid rgba(102,126,234,.24);
+        padding:.15rem .5rem; border-radius: 999px; font-size:.8rem; font-weight:700; }
+
+    /* Expander */
+    div[data-testid="column"]:last-child [data-testid="stExpander"] > details {
+        border: 1px solid #e9edf5; border-radius: 12px; background: #fafbff; overflow: hidden;
     }
+    div[data-testid="column"]:last-child [data-testid="stExpander"] > details > summary {
+        padding: 14px 16px; font-weight: 600; color: #1f2937; background: linear-gradient(180deg,#ffffff,#f6f7fb);
+    }
+    div[data-testid="column"]:last-child [data-testid="stExpander"] > details[open] {
+        border-color: #d9def0; background: #ffffff; box-shadow: inset 0 0 0 1px rgba(102,126,234,0.12);
+    }
+
+    /* Controls spacing */
+    div[data-testid="column"]:last-child .stSlider, 
+    div[data-testid="column"]:last-child .stNumberInput, 
+    div[data-testid="column"]:last-child .stCheckbox { margin-top: 6px; margin-bottom: 10px; }
+
+    /* Inputs accents */
+    div[data-testid="column"]:last-child input[type="range"] { accent-color: #667eea; }
+    div[data-testid="column"]:last-child input[type="range"]::-webkit-slider-runnable-track { background: #e8edf6; height: 6px; border-radius: 999px; }
+    div[data-testid="column"]:last-child input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -6px; background: linear-gradient(135deg,#667eea,#764ba2); border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    div[data-testid="column"]:last-child input[type="range"]::-moz-range-track { background: #e8edf6; height: 6px; border-radius: 999px; }
+    div[data-testid="column"]:last-child input[type="range"]::-moz-range-thumb { background: linear-gradient(135deg,#667eea,#764ba2); width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    div[data-testid="column"]:last-child input[type="number"] { border-radius: 10px; }
+    div[data-testid="column"]:last-child .st-bc { accent-color: #667eea; }
+
+    /* Actions spacing */
+    .filters-actions { height: 4px; margin-bottom: .25rem; }
+
+    /* Buttons */
+    div[data-testid="column"]:last-child .stButton > button {
+        width: 100%; border-radius: 10px; border: none;
+        box-shadow: 0 6px 16px rgba(102,126,234,0.18);
+        background: linear-gradient(135deg,#667eea,#764ba2);
+    }
+    div[data-testid="column"]:last-child .stButton > button[kind="secondary"] {
+        background: #eef2ff; color:#3730a3; box-shadow:none; border:1px solid #c7d2fe;
+    }
+
+    /* Sticky tabs below header */
+    .stTabs { position: sticky; top: 140px; z-index: 998; background: #f6f7fb; padding-top: 0.5rem; margin-top: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
 </style>
 """, unsafe_allow_html=True)
 
