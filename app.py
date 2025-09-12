@@ -7,6 +7,7 @@ from components.search import render_search
 from components.filters import render_filters
 from components.results import render_results
 from components.evaluation import render_evaluation
+from components.als import render_als_ui
 from data import load_hotels_df, load_id_mapping, load_metrics, load_doc2vec_model, load_doc2vec_similarity
 from components.business_problem import render_business_problem
 from recommender import (
@@ -58,6 +59,9 @@ if current_page == "Business Problem":
 elif current_page == "Evaluation & Report":
     # Evaluation & Report Page
     render_evaluation()
+
+elif current_page == "ALS":
+    render_als_ui()
 
 elif current_page == "Recommendation":
     # Original Recommendation Page

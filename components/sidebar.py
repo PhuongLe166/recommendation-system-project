@@ -27,6 +27,13 @@ def render_sidebar():
             st.session_state.current_page = "Evaluation & Report"
             st.rerun()
         
+        if st.button("🧮 ALS", 
+                    key="nav_als", 
+                    use_container_width=True,
+                    type="primary" if current_page == "ALS" else "secondary"):
+            st.session_state.current_page = "ALS"
+            st.rerun()
+        
         if st.button("🎯 Recommendation", 
                     key="nav_recommendation", 
                     use_container_width=True,
