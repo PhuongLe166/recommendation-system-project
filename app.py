@@ -24,8 +24,16 @@ inject_css()
 
 st.markdown("""
 <style>
-    /* Ensure sidebar stays fixed */
-    section[data-testid="stSidebar"] { position: fixed; top: 0; height: 100vh; }
+    /* Remove Streamlit default top header (white bar) so it doesn't overlap */
+    header[data-testid="stHeader"] { display: none; }
+
+    /* Ensure sidebar stays fixed and visible */
+    section[data-testid="stSidebar"] {
+        position: fixed; top: 0; left: 0; height: 100vh;
+        width: 21rem; min-width: 21rem;
+        transform: none !important; visibility: visible !important; opacity: 1 !important;
+        z-index: 1000;
+    }
 
     /* Sticky header */
     .main-header { position: fixed; top: 0; left: 21rem; right: 0; z-index: 999; margin: 0; }
