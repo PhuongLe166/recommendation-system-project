@@ -1,0 +1,216 @@
+Hotel ID,Hotel Name,Average Rating,Predicted Rating,Avg Normalized Hybrid Score,Number of Visitors,Times Recommended
+28_24,InterContinental Residences Nha Trang,9.94,9.6,0.94,7.0,4095
+10_7,"Biệt thự 240 m² 3 phòng ngủ, 4 phòng tắm riêng ở Biển Bãi Dài (Biệt thự hồ bơi riêng Cam Ranh Mystery Villa & Spa)",8.91,9.67,3.2,11.0,4029
+33_21,Khách sạn Long Hồ (Long Hồ Hotel),9.2,9.69,0.45,6.0,3832
+17_11,Biệt Thự Venity Nha Trang (Venity Villa Nha Trang),9.59,9.7,8.49,39.0,3718
+16_15,HANZ Muong Thanh Vien Trieu Condo Hotel,10.0,9.65,2.95,10.0,3297
+8_27,Vinpearl Luxury Nha Trang,10.0,9.48,0.02,5.0,1826
+39_17,Gold Coast Hotel Nha Trang,9.09,9.41,0.69,7.0,1778
+9_14,The Pool Villa Cam Ranh - All Private Pool Villas,8.32,9.53,0.03,5.0,1354
+12_7,Gran Meliá Nha Trang,9.49,9.3,8.69,70.0,1185
+5_1,Nomad Apartment,9.43,9.18,3.14,14.0,878
+13_26,Nhà Rosemary Bãi Dài - Căn hộ hướng biển gần sân bay Cam Ranh (Rosemary Home at Bai Dai Beach Nha Trang - Seaview Condo near Int't Cam Ranh Airport),9.2,9.34,2.02,10.0,836
+2_3,ELITE HOTEL NHA TRANG,9.82,9.23,3.89,17.0,651
+4_2,The Sea Luxury Nha Trang Apartment,9.43,9.23,6.84,37.0,471
+15_29,"Căn hộ 65 m² 1 phòng ngủ, 1 phòng tắm riêng ở Xương Huân (Coastal House Nha Trang)",9.36,9.14,0.02,5.0,407
+18_5,Thời Bình Hotel,9.35,9.09,1.68,8.0,389
+43_9,Khách sạn Gibson Nha Trang (GIBSON HOTEL NHA TRANG),9.43,9.04,4.5,21.0,305
+2_6,Golden Nha Trang Hotel,9.7,9.04,2.13,12.0,258
+15_12,Hà Nhung Hotel Nha Trang,9.05,8.97,4.66,20.0,255
+4_19,PANAMA Nha Trang Hotel,9.27,9.27,8.95,57.0,206
+6_14,CAM RANH NHA TRANG SEAVIEW RESORT,9.12,9.55,7.95,30.0,203
+29_14,Moonlight Bay Panorama Ocean View,9.68,9.25,9.45,74.0,184
+18_4,Rosemary Home @ Bai Dai Beach Nha Trang,9.18,9.39,5.93,22.0,167
+18_13,The Arena Cam Ranh Beach seaside,8.65,9.06,0.92,8.0,162
+1_14,Khu nghỉ dưỡng bãi biển Meliá Vinpearl Cam Ranh (Meliá Vinpearl Cam Ranh Beach Resort),9.28,8.87,9.39,116.0,139
+3_24,Oasis Nha Trang Hotel,9.16,9.28,5.4,19.0,128
+26_7,KHÁCH SẠN và CĂN HỘ AZURA GOLD (AZURA GOLD HOTEL and APARTMENT),9.42,9.35,9.76,126.0,122
+23_5,Residence Inn Villa Cam Ranh,9.49,8.64,7.75,38.0,85
+11_17,Khách sạn LeMore Nha Trang (LeMore Hotel Nha Trang),9.3,9.31,9.99,202.0,83
+6_5,The Empyrean Cam Ranh Beach Resort,8.75,8.84,10.0,176.0,83
+11_27,Khách Sạn Crown Nguyên Hoàng (Crown Nguyen Hoang Hotel),9.36,9.21,7.55,55.0,83
+5_9,Panorama Nha Trang By Risco,9.16,8.76,6.16,23.0,81
+13_8,DTX Hotel Nha Trang,9.37,9.41,10.0,208.0,79
+2_30,Khách sạn Art Nest Nha Trang (Art Nest Hotel Nha Trang),9.19,9.21,10.0,192.0,74
+35_6,Bondi Backpackers (Bondi Backpackers Nha Trang),8.99,9.19,9.9,78.0,66
+12_20,Khách sạn Bình An (Binh An Hotel Nha Trang),9.49,8.94,9.45,82.0,64
+9_24,Khu nghỉ dưỡng Selectum Noa Cam Ranh (Selectum Noa Resort Cam Ranh),9.08,9.14,10.0,198.0,63
+16_18,Khách sạn Queen Ann Nha Trang (Queen Ann Nha Trang Hotel),9.4,9.29,10.0,196.0,62
+3_1,TUI BLUE Nha Trang,9.31,9.37,10.0,191.0,61
+5_30,Holi Anna Boutique Hotel,8.91,8.81,10.0,144.0,60
+12_12,Lumina Villas Cam Ranh,9.16,9.16,10.0,135.0,57
+2_23,The Anam Cam Ranh,9.45,9.48,10.0,178.0,56
+17_1,"Chung cư 68 m² 2 phòng ngủ, 2 phòng tắm riêng ở Xương Huân (Baymax Home. Muong Thanh Apartment 2BR Riverview)",9.33,8.7,0.44,6.0,55
+3_2,Full House Hotel,8.87,8.64,4.35,23.0,55
+5_10,Green World Hotel Nha Trang,8.99,9.01,10.0,143.0,54
+15_1,Khách sạn Sao Việt Nha Trang (Sao Viet Nha Trang Hotel),8.94,7.59,4.58,26.0,51
+6_11,Mia Resort Nha Trang,9.53,9.56,10.0,170.0,51
+22_16,Venue Hotel,9.18,9.49,10.0,189.0,50
+12_17,The Signature Hotel Nha Trang,10.0,9.56,0.51,6.0,49
+32_4,King Hotel,8.94,7.46,2.45,14.0,48
+2_4,Khu nghỉ dưỡng Amiana Nha Trang (Amiana Resort Nha Trang),9.47,9.44,10.0,189.0,48
+3_29,Khách sạn Nagar Nha Trang (Nagar Hotel Nha Trang),9.27,9.31,10.0,186.0,48
+1_4,Panorama Star Beach Nha Trang,9.36,9.37,10.0,193.0,48
+6_6,Hien Luong Hotel Nha Trang,8.53,8.17,1.64,9.0,46
+21_8,Khách sạn Alana Nha Trang (Alana Nha Trang Beach Hotel),9.02,9.08,10.0,164.0,46
+15_7,An Lam Retreats Ninh Van Bay,9.34,9.26,10.0,193.0,44
+1_13,Senkotel Nha Trang do NEST Group quản lý (Senkotel Nha Trang Managed by NEST Group),8.91,8.95,10.0,152.0,42
+12_8,The Moon Villas (The Trang Villas),8.87,8.93,9.96,89.0,42
+10_22,Khách sạn Sunrise Nha Trang Beach Hotel & Spa (Sunrise Nha Trang Beach Hotel & Spa),9.67,9.52,9.93,122.0,40
+3_26,Aaron Boutique Hotel,9.37,9.42,10.0,100.0,39
+29_4,Khách sạn Mỹ Ca (My Ca Hotel),8.85,8.41,2.82,15.0,39
+24_5,Khách sạn Pavillon Garden Nha Trang (Pavillon Garden Hotel Nha Trang),8.63,8.43,10.0,133.0,39
+25_10,Khách Sạn Agnes Nha Trang (Agnes Nha Trang Hotel),9.1,9.03,10.0,153.0,38
+24_22,Rigel Hotel,9.32,9.47,9.97,132.0,37
+1_30,Areca Hotel Nha Trang,9.2,9.35,9.98,128.0,37
+39_7,Khách sạn & Căn hộ Moonlight Bay (Moonlight Bay hotel & apartment),9.21,9.4,9.97,109.0,36
+1_19,Royal HPM Hotel,9.09,9.02,10.0,150.0,35
+12_2,The Empyrean Nha Trang,8.99,8.98,10.0,176.0,34
+13_17,Khu nghỉ dưỡng và Spa Cam Ranh Riviera Beach - Trọn gói (Cam Ranh Riviera Beach Resort and Spa - All Inclusive),8.92,8.95,10.0,109.0,34
+6_10,Khách sạn Starlet (Starlet Hotel Nha Trang),8.27,8.27,10.0,123.0,33
+16_7,Khách sạn Grand Gosia (Grand Gosia Hotel),9.34,9.25,10.0,166.0,33
+18_12,Khách Sạn Vesna (Vesna Hotel),9.31,9.18,10.0,135.0,33
+2_7,The Swan Hotel,9.01,8.67,10.0,87.0,33
+2_5,Khách sạn Boutique Seasing (Seasing Boutique Hotel),9.13,9.12,10.0,123.0,32
+3_13,Vinpearl Resort & Spa Nha Trang Bay,9.36,9.3,10.0,134.0,32
+1_15,Khách Sạn Erica Nha Trang (Erica Nha Trang Hotel),9.2,8.83,10.0,169.0,31
+19_6,Masova Hotel,9.24,9.06,10.0,146.0,31
+23_25,Khách sạn Quinter Central Nha Trang (Quinter Central Nha Trang Hotel),9.12,9.04,10.0,114.0,31
+12_9,The View Hotel,9.4,9.31,2.98,10.0,30
+4_4,Seaview Cam Ranh,9.11,9.2,9.74,55.0,30
+1_16,The Summer Hotel,8.87,8.65,10.0,107.0,29
+5_16,Khách sạn MCR Luxury Nha Trang (The MCR Luxury Nha Trang Hotel),9.25,8.22,0.27,8.0,29
+1_3,Khách sạn Aaron (Aaron Hotel),9.14,9.31,10.0,123.0,29
+30_11,Wise Stay Gold Coast,9.34,9.46,9.78,78.0,29
+4_1,Khu nghỉ dưỡng Khách sạn & Spa Champa Island Nha Trang (Champa Island Nha Trang - Resort Hotel & Spa),9.36,9.03,10.0,173.0,29
+14_16,"Nha Trang Marriott Resort & Spa, Hon Tre Island",9.21,9.34,10.0,62.0,27
+38_25,Khu nghỉ dưỡng Paradise Dốc Lết - Trọn gói (Paradise Resort Doc Let - All Inclusive),9.18,8.04,5.78,36.0,27
+2_15,Khu nghỉ dưỡng Duyên Hà - Cam Ranh (Duyen Ha Resort Cam Ranh),9.3,9.27,10.0,172.0,26
+36_14,Khách sạn Vân Nam Nha Trang (Van Nam Hotel Nha Trang),8.52,8.78,10.0,81.0,26
+16_4,Green Lighthouse (Green Lighthouse Hotel),8.73,9.28,9.82,63.0,25
+1_21,Libra Nha Trang Hotel,9.43,9.42,10.0,152.0,25
+3_11,Green Beach Nha Trang,9.31,9.3,10.0,92.0,24
+6_27,Vinpearl Beachfront Nha Trang,9.38,9.39,10.0,161.0,24
+2_13,Panorama Nha Trang by HLG,8.97,8.87,10.0,157.0,24
+1_17,Panorama Nha Trang Ocean View,9.02,9.08,10.0,133.0,23
+20_18,Khách Sạn Crown Nha Trang (Crown Hotel Nha Trang),9.24,9.1,10.0,95.0,23
+10_2,InterContinental Nha Trang,9.56,9.59,9.92,120.0,23
+2_2,Muong Thanh Grand Nha Trang Hotel,9.3,9.53,10.0,147.0,23
+27_17,Luu Gia Hotel,9.35,9.42,9.06,41.0,23
+12_5,Khách sạn Nice Swan (Nice Swan Hotel Nha Trang),8.44,8.64,10.0,79.0,22
+3_28,The Costa Nha Trang (The Costa Nha Trang Residences),9.0,9.3,10.0,107.0,22
+5_8,Muong Thanh Vien Trieu Hotel & Apartment Nha Trang,9.02,7.68,0.69,9.0,22
+5_4,Lotus Village Nha Trang,9.06,8.81,10.0,81.0,22
+14_14,Wyndham Grand KN Paradise Cam Ranh,8.88,8.74,9.91,94.0,21
+1_29,Khách sạn Paris Nha Trang (Paris Nha Trang Hotel and Apartment),8.64,8.67,8.88,78.0,21
+22_1,Khách sạn Galina & Spa (Galina Hotel & Spa),8.93,8.76,10.0,90.0,21
+31_4,Khách sạn TND (TND Hotel),9.12,8.61,10.0,72.0,20
+27_12,Vanda Hotel Nha Trang,9.22,9.18,10.0,70.0,19
+4_5,Heritage Boutique Sierra Legend,8.85,8.82,9.67,43.0,19
+36_6,Khu Du Lịch Hòn Ông (Whale Island Resort),8.89,9.15,10.0,69.0,18
+18_17,Gold Coast Nha Trang Luxury Apartment - Ocean View,9.12,8.83,10.0,66.0,18
+18_2,Cam Ranh Mystery Villas & Spa,9.02,9.31,9.55,43.0,18
+29_24,Ccasa hostel,9.01,9.04,9.78,66.0,18
+2_25,Khách sạn Ale Nha Trang (Ale Nha Trang Hotel),9.17,9.02,10.0,50.0,17
+26_27,Nha Trang Lodge Hotel,8.8,8.69,10.0,82.0,17
+2_8,Dubai Nha Trang Hotel,9.12,9.49,10.0,62.0,17
+11_21,La Paloma Villa,8.86,9.2,9.79,44.0,17
+4_8,Khách Sạn Boutique Em Ơi (Em Oi Boutique Hotel),9.47,9.62,9.44,45.0,17
+24_17,MAJESTIC PREMIUM,9.14,9.38,10.0,105.0,16
+4_23,Khách sạn Havana  Nha Trang (Havana Nha Trang Hotel),9.39,9.48,10.0,142.0,16
+32_14,An Vista Hotel,8.9,8.72,10.0,48.0,16
+23_15,Condotel Arena's at Bai Dai Beach Nha Trang,9.24,8.45,1.47,9.0,15
+3_17,Khách sạn Skylight Nha Trang (Skylight Nha Trang Hotel),9.12,8.72,3.88,10.0,15
+1_7,Khách sạn Mega Light (Mega Light Hotel),8.86,8.71,10.0,92.0,14
+30_26,Green Home Nha Trang,9.55,9.66,8.38,16.0,14
+1_12,Khách sạn AZURA (Azura Hotel),9.05,8.97,10.0,71.0,14
+1_22,Khách Sạn Apollo Nha Trang (Apollo Hotel Nha Trang),8.84,8.72,8.18,37.0,14
+19_16,Khách sạn Sochi (Sochi Hotel),9.08,9.14,10.0,110.0,14
+26_17,Aquamarine Resort Hotel Cam Ranh,9.1,9.46,3.5,8.0,14
+28_7,Khách sạn Le Soleil Nha Trang (Le Soleil Hotel Nha Trang),8.63,8.95,9.99,60.0,13
+37_14,ISeaview Heritage Boutique Hotel,8.93,8.81,9.12,36.0,13
+3_20,Khách sạn Blue Pearl (Blue Pearl Hotel),8.97,8.8,9.78,29.0,13
+6_15,Căn hộ dịch vụ hướng biển ở Cam Ranh - Nha Trang (JOY Sea-View Serviced Apartment in Cam Ranh - Nha Trang),9.19,9.1,9.68,41.0,13
+1_8,Navada Beach Hotel,9.57,9.75,10.0,155.0,13
+34_26,Sun and Sea Mường Thanh Holidays (Sun and Sea Muong Thanh Holidays),9.04,9.19,9.13,55.0,13
+1_1,Khách sạn Mường Thanh Luxury Nha Trang (Muong Thanh Luxury Nha Trang Hotel),9.37,9.34,10.0,129.0,12
+3_10,Khách sạn Dendro Gold (Dendro Gold Hotel ),9.28,9.6,10.0,130.0,12
+3_27,GM Doc Let Beach Resort and Spa,8.18,8.24,10.0,56.0,12
+5_7,Khách Sạn Hướng Biển Aqua (Aqua Seaview Hotel),9.63,9.77,8.09,43.0,12
+3_4,Handy Panorama Nha Trang Ocean View,9.01,9.05,10.0,125.0,12
+4_25,Diamond Bay Hotel,9.26,9.64,10.0,146.0,12
+9_7,Vinpearl Resort Nha Trang,9.33,8.92,9.11,99.0,12
+20_28,Santorini Villa Cam Ranh,9.03,8.72,10.0,37.0,11
+1_25,Khách sạn Marilyn Boutique Nha Trang (Marilyn Boutique Hotel Nha Trang),9.39,9.01,10.0,79.0,11
+1_2,ALPHA BIRD NHA TRANG,9.1,8.92,10.0,120.0,11
+4_26,La Sera Suites Nha Trang,9.12,9.37,1.71,10.0,10
+2_10,Oceanus Oasis Retreat Muong Thanh Vien Trieu,8.64,7.65,10.0,65.0,10
+8_15,Khách sạn Nhi Phi (Nhi Phi Hotel Nha Trang),8.45,7.69,10.0,71.0,9
+6_18,Homie Panorama Nha Trang,9.07,9.0,6.36,19.0,9
+1_23,Holi Panorama Nha Trang,9.16,9.64,9.83,128.0,9
+33_22,Khách Sạn Sun Kiss (Sun Kiss Hotel),9.42,9.86,7.39,26.0,8
+3_18,Khách sạn Bonjour Nha Trang (Bonjour Nha Trang Hotel),8.81,8.38,10.0,54.0,8
+4_6,Khách sạn Alibaba (Alibaba Hotel),8.94,9.42,7.09,14.0,8
+7_6,Saphia hotel Nha Trang,9.19,9.42,10.0,31.0,8
+12_30,Aura Panorama Nha Trang,9.28,9.15,9.28,25.0,7
+3_23,Fusion Resort Cam Ranh – All Spa Inclusive (Fusion Resort Cam Ranh - All Spa Inclusive),9.12,8.83,10.0,195.0,7
+24_30,Spring Home-The Cam Ranh Resort,8.92,9.39,7.75,20.0,7
+2_12,Căn hộ bãi biển Pearl Nha Trang (Pearl Nha Trang Beach Apartment),9.38,9.0,10.0,32.0,7
+27_27,BN Center Hotel - Nguyen Thi Minh Khai,8.93,8.93,7.7,27.0,7
+15_17,Khách Sạn Seana (Seana Hotel),9.41,9.7,10.0,180.0,6
+38_15,Sun And Sea Apartment Nha Trang,8.85,8.52,6.29,36.0,6
+35_16,Khách Sạn Ruby (Ruby Hotel),8.9,9.05,7.2,29.0,6
+1_10,Olwen Hotel,8.86,8.87,10.0,43.0,6
+13_27,Khách sạn Asteria Comodo Nha Trang (Asteria Comodo Nha Trang Hotel),9.47,9.58,10.0,122.0,6
+3_3,Khu Nghỉ Dưỡng Movenpick Cam Ranh (Movenpick Resort Cam Ranh),9.39,9.65,10.0,134.0,5
+2_28,Khách sạn Prague Nha Trang (Prague Nha Trang Hotel),8.8,9.44,7.74,23.0,5
+1_26,khách sạn phố ngọc,9.05,8.47,4.7,21.0,5
+37_3,Sky Beach D20 Nha Trang,9.22,9.89,9.87,33.0,5
+13_10,L’Alya Vịnh Ninh Vân (L'Alya Ninh Van Bay),9.47,9.55,10.0,142.0,5
+21_27,Khách Sạn Senia Nha Trang (Senia Hotel),9.12,9.6,9.96,158.0,4
+12_1,Like Family Hotel,8.73,9.0,3.8,12.0,4
+33_4,Panorama Beachfront Nha Trang Condotel,8.66,8.48,4.84,13.0,4
+41_1,Khách sạn West Lake - Gần Bãi Dài (West Lake Hotel - Near Bãi Dài Beach),8.68,8.03,4.93,17.0,4
+36_13,Căn hộ HighSea Nha Trang (HighSea Nha Trang Apartments),8.94,9.59,6.56,27.0,4
+2_19,Royal Hotel Nha Trang,8.62,8.03,4.68,18.0,4
+11_11,Citadines Bayfront Nha Trang,9.22,9.35,10.0,186.0,3
+39_6,Khách sạn Magnolia Cam Ranh (Magnolia Hotel Cam Ranh),8.48,8.29,0.0,5.0,3
+36_23,Khách sạn Nalicas (Nalicas Hotel),9.3,8.59,8.54,49.0,3
+5_12,Odessa Hotel,8.27,8.31,3.23,12.0,3
+3_6,Khách sạn Thái Bình (Khach san Thai Binh),8.07,7.13,9.19,11.0,3
+3_15,A Páo Cafe & Homestay,9.54,9.92,5.12,19.0,3
+7_26,Khu Nghỉ Dưỡng Radisson Blu Vịnh Cam Ranh (Radisson Blu Resort Cam Ranh),9.42,9.17,10.0,188.0,3
+5_24,Khu Nghỉ Dưỡng Swandor Cam Ranh-Trọn Gói (Swandor Cam Ranh Resort-Ultra All Inclusive),9.11,9.51,10.0,179.0,3
+6_9,Angella Hotel Nha Trang,8.67,7.79,6.91,22.0,3
+12_24,Panorama Nha Trang Condotel,8.65,8.59,10.0,12.0,3
+3_16,ibis Styles Nha Trang,8.99,9.08,10.0,176.0,2
+2_22,TRUONG THINH HOTEL,9.44,9.28,2.86,10.0,2
+13_3,Oasis Retreat - Muong Thanh Vien Trieu,9.44,9.92,0.0,5.0,2
+4_11,Blue Sea 2 Hotel Nha Trang,8.49,8.13,1.83,7.0,2
+3_25,Khách Sạn Ventana Nha Trang (Ventana Nha Trang Hotel),9.34,9.15,10.0,211.0,2
+6_23,Potique Hotel,9.64,8.9,10.0,228.0,2
+3_30,Grand Tourane Nha Trang Hotel,9.34,9.35,10.0,207.0,2
+5_17,Khách Sạn Cliff Nha Trang (Cliff Hotel Nha Trang),8.84,7.53,1.94,9.0,2
+38_5,La Casa Hotel Nha Trang,9.53,9.57,5.76,23.0,2
+11_25,Six Senses Ninh Vân Bay (Six Senses Ninh Van Bay),9.32,9.55,10.0,115.0,2
+4_16,Khách sạn Dqua (DQua Hotel),9.12,9.67,10.0,128.0,2
+2_29,Khách sạn & Spa Boton Blue (Boton Blue Hotel & Spa),8.99,9.3,10.0,184.0,2
+14_9,Khách sạn Thiên Trường (Thien Truong Hotel),9.48,9.91,10.0,16.0,2
+1_6,Căn hộ Kymodo Panorama (Kymodo Panorama Apartment),9.39,9.35,10.0,171.0,2
+16_10,Khách sạn Xavia (Xavia Hotel),9.58,9.06,10.0,148.0,1
+5_23,KHÁCH SẠN SEAESTA NHA TRANG (SEAESTA NHA TRANG HOTEL),9.57,9.67,10.0,153.0,1
+6_17,Boma Resort Nha Trang,9.41,9.26,10.0,225.0,1
+4_3,Gonsala Hotel Nha Trang,9.6,9.8,2.48,12.0,1
+5_22,BN Hotel Nha Trang,9.13,9.79,0.0,6.0,1
+1_27,Khách Sạn Smile (Smile Hotel),9.14,9.75,10.0,169.0,1
+1_11,RIS Panorama Nha Trang,9.26,9.72,10.0,183.0,1
+2_24,DB Hotel Nha Trang,9.4,9.91,1.43,10.0,1
+5_11,Ocean Waves Resort Cam Ranh,9.26,9.51,0.29,7.0,1
+2_26,Khách Sạn Starcity Nha Trang (StarCity Nha Trang Hotel),9.12,9.79,10.0,146.0,1
+2_17,Nha Trang Horizon Hotel,9.13,9.75,10.0,93.0,1
+10_12,Sata Hotel,9.41,9.68,10.0,205.0,1
+2_11,Maris Hotel Nha Trang,9.69,9.54,10.0,146.0,1
+5_6,Khách sạn và Spa Florida Nha Trang (Florida Nha Trang Hotel And Spa),9.21,9.71,10.0,78.0,1
+1_18,Pavillon Boutique Hotel & Apartment Nha Trang,9.35,9.75,10.0,48.0,1
+5_13,Virgo Hotel,9.53,9.76,10.0,177.0,1
+2_18,TK Nha Trang Hotel,8.65,7.53,0.0,8.0,1
