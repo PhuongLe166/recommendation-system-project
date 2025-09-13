@@ -3,3 +3,10 @@ gensim
 streamlit
 pandas
 scikit-learn
+huggingface_hub
+pyvi
+transformers
+wordcloud
+seaborn
+matplotlib
+torch

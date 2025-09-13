@@ -34,6 +34,13 @@ def render_sidebar():
             st.session_state.current_page = "ALS"
             st.rerun()
         
+        if st.button("💼 Business Insight", 
+                    key="nav_business_insight", 
+                    use_container_width=True,
+                    type="primary" if current_page == "Business Insight" else "secondary"):
+            st.session_state.current_page = "Business Insight"
+            st.rerun()
+        
         if st.button("🎯 Recommendation", 
                     key="nav_recommendation", 
                     use_container_width=True,
