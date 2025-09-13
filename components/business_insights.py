@@ -78,25 +78,21 @@ def _lexicon_sentiment_counts(texts):
     return counts
 
 # =============================================================================
-# LOAD TRANSFORMERS SENTIMENT MODEL
+# LAZY-LOAD SENTIMENT MODEL (faster startup on Streamlit Cloud)
 # =============================================================================
-try:
-    if pipeline is not None:
-        sentiment_model = pipeline("sentiment-analysis",
-                                  model="wonrax/phobert-base-vietnamese-sentiment")
-        print("✅ Loaded Vietnamese sentiment model")
-    else:
-        sentiment_model = None
-except Exception:
+sentiment_model = None  # global placeholder
+
+@st.cache_resource(show_spinner=False)
+def _load_hf_sentiment_model():
+    if pipeline is None:
+        return None
     try:
-        if pipeline is not None:
-            sentiment_model = pipeline("sentiment-analysis",
-                                      model="cardiffnlp/twitter-xlm-roberta-base-sentiment")
-            print("✅ Loaded multilingual sentiment model")
-        else:
-            sentiment_model = None
+        return pipeline("sentiment-analysis", model="wonrax/phobert-base-vietnamese-sentiment")
     except Exception:
-        sentiment_model = None
+        try:
+            return pipeline("sentiment-analysis", model="cardiffnlp/twitter-xlm-roberta-base-sentiment")
+        except Exception:
+            return None
 
 # =============================================================================
 # DATA LOADING AND PREPROCESSING
@@ -300,7 +296,13 @@ class HotelAnalyticsEngine:
         try:
             all_texts = comments['Body'].dropna().astype(str).tolist() if 'Body' in comments.columns else []
             if all_texts:
-                if sentiment_model is not None:
+                # Try cached HF model only if explicitly enabled (faster cold start)
+                use_hf = st.session_state.get("bi_use_hf_sentiment", False)
+                if use_hf:
+                    global sentiment_model
+                    if sentiment_model is None:
+                        sentiment_model = _load_hf_sentiment_model()
+                if sentiment_model is not None and use_hf:
                     batch_size = 64
                     for i in range(0, len(all_texts), batch_size):
                         chunk = all_texts[i:i+batch_size]
@@ -314,7 +316,7 @@ class HotelAnalyticsEngine:
                             else:
                                 sentiment_dist['Neutral'] += 1
                 else:
-                    # Fallback lexicon method if HF not available
+                    # Fast lexicon method (default)
                     sentiment_dist = _lexicon_sentiment_counts(all_texts)
         except Exception as e:
             print(f"⚠️ Sentiment analysis error: {e}")
@@ -1257,6 +1259,10 @@ def render_business_insights():
     except Exception as e:
         st.error(str(e))
         return
+
+    # Toggle for heavy HF sentiment (default off for performance on Cloud)
+    with st.expander("Advanced options", expanded=False):
+        st.checkbox("Use Hugging Face sentiment (slower, more accurate)", key="bi_use_hf_sentiment", value=False)
 
     # Filters
     col_l, col_r = st.columns([2, 1])
