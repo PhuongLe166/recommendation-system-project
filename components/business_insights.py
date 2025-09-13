@@ -1230,15 +1230,21 @@ def _render_monthly_trend(demo: dict):
 
 
 def _render_pie_counts(series: pd.Series, title: str, top_n: int = 8):
-    if series is None or series.dropna().empty:
+    # Defensive: accept None or non-Series inputs
+    if series is None:
         return None
-    counts = series.dropna().astype(str).str.strip().replace({"": None}).dropna().value_counts()
+    s = series if isinstance(series, pd.Series) else pd.Series(series)
+    s = s.dropna().astype(str).str.strip()
+    s = s[s != ""]
+    if s.empty:
+        return None
+    counts = s.value_counts()
     if counts.empty:
         return None
     if len(counts) > top_n:
         top = counts.head(top_n)
         other_sum = counts.iloc[top_n:].sum()
-        counts = top.append(pd.Series({"Other": other_sum}))
+        counts = pd.concat([top, pd.Series({"Other": other_sum})])
     fig = go.Figure(go.Pie(labels=counts.index.tolist(), values=counts.values.tolist(), hole=0.3))
     fig.update_layout(
         title_text=title,
