@@ -294,6 +294,13 @@ def render_als_ui():
         if "als_view" not in st.session_state:
             st.session_state["als_view"] = "Cards"
 
+        # Handle reset trigger before widgets are created (Streamlit restriction)
+        if st.session_state.get("als_reset", False):
+            st.session_state["als_min_avg"] = 7.0
+            st.session_state["als_min_rev"] = 5
+            st.session_state["als_view"] = "Cards"
+            st.session_state["als_reset"] = False
+
         colA, colB, colC, colD = st.columns([2.8, 2.0, 1.4, 1.0], gap="medium")
         with colA:
             users_df = load_all_users_df()
@@ -324,7 +331,8 @@ def render_als_ui():
                 st.radio("View mode", ["Cards", "Table"], horizontal=True, key="als_view")
             with f4:
                 if st.button("Reset"):
-                    st.session_state.update({"als_min_avg": 7.0, "als_min_rev": 5, "als_view": "Cards"})
+                    # Set trigger and rerun so we reset BEFORE widgets instantiate
+                    st.session_state["als_reset"] = True
                     st.rerun()
 
         # Read filters from session state
