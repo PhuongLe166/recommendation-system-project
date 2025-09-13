@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Hotel Business Intelligence System - Complete Fixed Version
-Cung cấp insight toàn diện cho chủ khách sạn với visualizations chi tiết
+Comprehensive insights for hotel owners with detailed visualizations
 """
 
 import pandas as pd
@@ -167,12 +167,12 @@ class HotelAnalyticsEngine:
         self.hotel_info = hotel_info
         self.hotel_comments = hotel_comments
         self.system_avg = system_avg
-        self.stop_words = {'và','là','có','không','được','cho','với','của','một','các',
-                          'này','đó','rất','tôi','em','anh','chị','ạ','ở','về','đi','ra',
-                          'vào','lên','xuống','khách','sạn','hotel','room','phòng'}
+        self.stop_words = {'and','is','are','have','not','with','for','of','a','the',
+                          'this','that','very','i','we','you','at','in','go','out',
+                          'into','up','down','hotel','room'}
 
     def get_hotel_overview(self, hotel_id):
-        """Thông tin tổng quan khách sạn"""
+        """Hotel overview"""
         hotel_data = self.hotel_info[self.hotel_info['Hotel_ID'] == hotel_id]
         if hotel_data.empty:
             return None
@@ -197,14 +197,14 @@ class HotelAnalyticsEngine:
         return overview
 
     def analyze_strengths_weaknesses(self, hotel_id):
-        """Phân tích điểm mạnh & điểm yếu"""
+        """Analyze strengths & weaknesses"""
         hotel_data = self.hotel_info[self.hotel_info['Hotel_ID'] == hotel_id]
         if hotel_data.empty:
             return None
 
         hotel = hotel_data.iloc[0]
 
-        # So sánh với trung bình hệ thống
+        # Compare to system average
         metrics = ['Location', 'Cleanliness', 'Service', 'Facilities', 'Value_for_money']
         strengths = []
         weaknesses = []
@@ -236,19 +236,19 @@ class HotelAnalyticsEngine:
         }
 
     def analyze_customer_demographics(self, hotel_id):
-        """Thống kê khách hàng"""
+        """Customer statistics"""
         comments = self.hotel_comments[self.hotel_comments['Hotel_ID'] == hotel_id]
         if comments.empty:
             return None
 
-        # Phân tích theo thời gian
+        # Time-based analysis
         time_analysis = {
             'by_quarter': comments.groupby('Quarter').size().to_dict() if 'Quarter' in comments else {},
             'by_month': comments.groupby('Month').size().to_dict() if 'Month' in comments else {},
             'by_year': comments.groupby('Year').size().to_dict() if 'Year' in comments else {}
         }
 
-        # Phân tích điểm số
+        # Score distribution
         score_distribution = comments['Score'].value_counts().sort_index().to_dict() if 'Score' in comments else {}
 
         return {
@@ -259,12 +259,12 @@ class HotelAnalyticsEngine:
         }
 
     def extract_customer_insights(self, hotel_id):
-        """Phân tích từ khóa trong nhận xét của khách hàng"""
+        """Keyword and sentiment analysis from reviews"""
         comments = self.hotel_comments[self.hotel_comments['Hotel_ID'] == hotel_id]
         if comments.empty or 'Body' not in comments.columns:
             return {'keywords': [], 'sentiment': {}, 'topics': []}
 
-        # Xử lý text
+        # Process text
         texts = []
         for text in comments['Body'].fillna(''):
             try:
@@ -328,7 +328,7 @@ class HotelAnalyticsEngine:
         }
 
     def benchmark_comparison(self, hotel_id):
-        """So sánh với trung bình hệ thống"""
+        """Compare with system average"""
         hotel_data = self.hotel_info[self.hotel_info['Hotel_ID'] == hotel_id]
         if hotel_data.empty:
             return None
@@ -355,7 +355,7 @@ class HotelAnalyticsEngine:
         return comparison
 
     def _calculate_trend(self, comments):
-        """Tính toán xu hướng review"""
+        """Compute review trend"""
         if comments.empty or 'Review_Date' not in comments.columns:
             return 'No data'
 
@@ -377,7 +377,7 @@ class HotelAnalyticsEngine:
             return 'Stable'
 
     def _calculate_percentile(self, metric, score):
-        """Tính percentile của hotel trong hệ thống"""
+        """Compute percentile of the hotel within the system"""
         if metric in self.hotel_info.columns:
             all_scores = pd.to_numeric(self.hotel_info[metric], errors='coerce').dropna()
             if len(all_scores) > 0:
@@ -395,7 +395,7 @@ class HotelVisualizationDashboard:
         self.engine = analytics_engine
 
     def create_executive_dashboard(self, hotel_id):
-        """Tạo dashboard tổng quan cho executive"""
+        """Create executive-level overview dashboard"""
         overview = self.engine.get_hotel_overview(hotel_id)
         strengths_weak = self.engine.analyze_strengths_weaknesses(hotel_id)
         benchmark = self.engine.benchmark_comparison(hotel_id)
@@ -519,7 +519,7 @@ class HotelVisualizationDashboard:
         print("="*80)
 
     def create_detailed_analytics_report(self, hotel_id):
-        """Tạo báo cáo phân tích chi tiết với dữ liệu thực"""
+        """Create a detailed analytics report using actual data"""
         customer_insights = self.engine.extract_customer_insights(hotel_id)
         demographics = self.engine.analyze_customer_demographics(hotel_id)
 
@@ -683,7 +683,7 @@ class HotelVisualizationDashboard:
         plt.show()
 
     def create_review_timeline_analysis(self, hotel_id):
-        """Tạo phân tích timeline chi tiết cho reviews - MISSING METHOD ADDED"""
+        """Create detailed review timeline analysis"""
         overview = self.engine.get_hotel_overview(hotel_id)
         if not overview:
             print("❌ Hotel not found!")
@@ -1258,7 +1258,7 @@ def _render_pie_counts(series: pd.Series, title: str, top_n: int = 8):
 def render_business_insights():
     """Streamlit page: Business Insight. Allow choosing a hotel_id and show insights."""
     st.markdown("### 💼 Business Insight")
-    st.caption("Chọn một Hotel ID để xem insight dành cho chủ khách sạn.")
+    st.caption("Select a Hotel ID to view owner-focused insights.")
 
     try:
         engine, hotel_info, hotel_comments, _ = _load_bi_data()
@@ -1266,29 +1266,27 @@ def render_business_insights():
         st.error(str(e))
         return
 
-    # Toggle for heavy HF sentiment (default off for performance on Cloud)
-    with st.expander("Advanced options", expanded=False):
-        st.checkbox("Use Hugging Face sentiment (slower, more accurate)", key="bi_use_hf_sentiment", value=False)
+    # Advanced option removed for simpler UX and faster load on Cloud
 
     # Filters
     col_l, col_r = st.columns([2, 1])
     with col_l:
-        hotel_name_query = st.text_input("Tìm theo tên khách sạn", "")
+        hotel_name_query = st.text_input("Search hotel name", "")
         df_filter = hotel_info
         if hotel_name_query:
             df_filter = hotel_info[hotel_info.get('Hotel_Name', '').astype(str).str.contains(hotel_name_query, case=False, na=False)]
         hotel_ids = df_filter['Hotel_ID'].tolist() if 'Hotel_ID' in df_filter.columns else []
         if not hotel_ids:
-            st.warning("Không tìm thấy Hotel_ID phù hợp.")
+            st.warning("No matching Hotel_ID found.")
             return
         hotel_id = st.selectbox("Hotel ID", hotel_ids, index=0)
     with col_r:
-        st.metric("Tổng số khách sạn", f"{len(hotel_info):,}")
-        st.metric("Tổng số reviews", f"{len(hotel_comments):,}")
+        st.metric("Total hotels", f"{len(hotel_info):,}")
+        st.metric("Total reviews", f"{len(hotel_comments):,}")
 
     overview = engine.get_hotel_overview(hotel_id)
     if not overview:
-        st.warning("Không tìm thấy thông tin khách sạn.")
+        st.warning("Hotel not found.")
         return
 
     strengths_weak = engine.analyze_strengths_weaknesses(hotel_id)
