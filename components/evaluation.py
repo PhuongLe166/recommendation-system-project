@@ -98,6 +98,15 @@ def render_evaluation():
     ]
     _render_image_section("Illustration Charts (Content-Based Models)", selected_images)
 
+    st.markdown(
+        """
+        **Insights from Charts:**  
+        - **Precision@K:** All three methods perform well, Doc2Vec slightly ahead → stronger top-K recommendation quality.  
+        - **MAP & Correlation:** Doc2Vec gives the highest MAP, showing better ranking of relevant hotels.  
+        - **Radar Chart:** Doc2Vec leads in accuracy, TF-IDF is lightweight/fast, LSI balances interpretability.  
+        """
+    )
+
     # --- Similarity Distributions ---
     sim_images = [
         ("tfidf_similarity_distribution.png", "TF-IDF Similarity Distribution"),
@@ -106,6 +115,15 @@ def render_evaluation():
     ]
     _render_image_section("Similarity Distributions by Model", sim_images)
 
+    st.markdown(
+        """
+        **Insights from Distributions:**  
+        - **TF-IDF:** Narrow distribution, struggles to separate similar vs dissimilar hotels.  
+        - **LSI (Gensim):** Broader distribution, better clustering of hotels by topics.  
+        - **Doc2Vec:** Balanced bell-shaped distribution with mean ≈ 0.4 → strongest semantic separation.  
+        """
+    )
+
     # --- Wordclouds ---
     wc_images = [
         ("tfidf_wordcloud.png", "TF-IDF Wordcloud"),
@@ -113,6 +131,15 @@ def render_evaluation():
         ("doc2vec_wordcloud.png", "Doc2Vec Wordcloud"),
     ]
     _render_image_section("Wordclouds by Model", wc_images)
+
+    st.markdown(
+        """
+        **Insights from Wordclouds:**  
+        - **TF-IDF:** Focuses on frequent tokens (*“biển”, “new property”*, etc.) → surface-level representation.  
+        - **LSI (Gensim):** Highlights latent topics (*“dịch vụ”, “khách hàng”, “trải nghiệm”*) → better topic grouping.  
+        - **Doc2Vec:** Captures richer semantics (*“tận hưởng”, “tuyệt vời”, “gần biển”*) → reflects customer intent best.  
+        """
+    )
 
     # ==============================
     # ALS Collaborative Filtering
