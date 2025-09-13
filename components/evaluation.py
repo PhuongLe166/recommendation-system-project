@@ -5,7 +5,9 @@ import os, json, base64
 def render_evaluation():
     st.header("Evaluation & Report")
 
+    # ==============================
     # CSS for image cards
+    # ==============================
     st.markdown(
         """
         <style>
@@ -19,7 +21,9 @@ def render_evaluation():
         unsafe_allow_html=True,
     )
 
-    # --- Load metrics ---
+    # ==============================
+    # Load Content-Based metrics
+    # ==============================
     try:
         with open("hotel_ui_data/performance_metrics.json", "r", encoding="utf-8") as f:
             metrics_data = json.load(f)
@@ -29,7 +33,6 @@ def render_evaluation():
 
     methods = metrics_data.get("methods", {})
 
-    # --- Model comparison table ---
     df_metrics = pd.DataFrame([
         {
             "Method": m.upper(),
@@ -41,19 +44,24 @@ def render_evaluation():
         for m, v in methods.items()
     ])
 
-    st.subheader("Model Comparison")
+    # ==============================
+    # Content-Based Evaluation
+    # ==============================
+    st.subheader("Content-Based Model Comparison")
     st.dataframe(df_metrics, use_container_width=True, hide_index=True)
 
     st.markdown(
         """
-        **Interpretation:**
-        - **Doc2Vec** achieves the highest precision and MAP, indicating stronger ranking quality, though it requires significantly more build time.
-        - **TF-IDF** provides competitive accuracy with much lower computation cost, making it efficient for quick experimentation.
-        - **Gensim LSI** balances performance and efficiency but does not outperform Doc2Vec in ranking quality.
+        **Interpretation (Content-Based Models):**
+        - **Doc2Vec** achieves the highest precision and MAP, confirming stronger ranking quality, but requires longer build time.  
+        - **TF-IDF** remains competitive while being lightweight and efficient.  
+        - **LSI (Gensim)** offers balance but does not outperform Doc2Vec in ranking relevance.  
         """
     )
 
-    # --- Visualization Cards Helper ---
+    # ==============================
+    # Visualization Cards Helper
+    # ==============================
     img_dir = "hotel_ui_data/images"
 
     def _card_from_path(img_path: str, caption: str) -> str:
@@ -82,22 +90,13 @@ def render_evaluation():
                         st.markdown(html, unsafe_allow_html=True)
                     idx += 1
 
-    # --- Charts: Performance comparison ---
+    # --- Charts: Content-Based Comparison ---
     selected_images = [
         ("methods_precision.png", "Precision@K Comparison"),
         ("methods_quality.png", "MAP & Correlation"),
         ("methods_radar.png", "Overall Performance Radar")
     ]
-    _render_image_section("Illustration Charts", selected_images)
-
-    st.markdown(
-        """
-        **Insights:**
-        - The **Precision@K chart** shows that all three methods perform consistently, but Doc2Vec slightly edges ahead for top-K recommendations.  
-        - The **MAP & Correlation chart** highlights Doc2Vec’s superior ability to rank relevant hotels higher while maintaining stable correlation with ground truth.  
-        - The **Radar chart** visualizes multi-metric trade-offs: Doc2Vec leads in precision and MAP, while TF-IDF remains lightweight with faster runtime.
-        """
-    )
+    _render_image_section("Illustration Charts (Content-Based Models)", selected_images)
 
     # --- Similarity Distributions ---
     sim_images = [
@@ -107,15 +106,6 @@ def render_evaluation():
     ]
     _render_image_section("Similarity Distributions by Model", sim_images)
 
-    st.markdown(
-        """
-        **Observations:**
-        - **TF-IDF** shows a narrow similarity distribution, meaning it struggles to clearly separate very similar vs. dissimilar hotels.  
-        - **LSI (Gensim)** offers a broader distribution, capturing latent topics and improving hotel clustering.  
-        - **Doc2Vec** produces the most informative spread, reflecting stronger semantic separation, crucial for nuanced hotel recommendations (e.g., distinguishing “beach resort” vs. “city business hotel”).
-        """
-    )
-
     # --- Wordclouds ---
     wc_images = [
         ("tfidf_wordcloud.png", "TF-IDF Wordcloud"),
@@ -124,26 +114,60 @@ def render_evaluation():
     ]
     _render_image_section("Wordclouds by Model", wc_images)
 
+    # ==============================
+    # ALS Collaborative Filtering
+    # ==============================
+    st.subheader("Collaborative Filtering (ALS) Evaluation")
+
     st.markdown(
         """
-        **Key Takeaways:**
-        - **TF-IDF** emphasizes frequent keywords like *“new property”* or *“good facilities”*, focusing on surface-level features.  
-        - **LSI (Gensim)** identifies broader topics such as *customer service* and *travel experience*, offering more context than raw frequency.  
-        - **Doc2Vec** captures richer semantic cues, linking words such as *“family-friendly”*, *“cleanliness”*, and *“near beach”*, which better reflect user intent and hotel attributes.
+        | Metric              | Value (approx.) | Interpretation |
+        |---------------------|-----------------|----------------|
+        | **Mean Prediction** | 8.72            | Predictions mostly around 9, limited variance. |
+        | **Std. Dev. Pred.** | 0.81            | Concentrated predictions, weak separation. |
+        | **Mean Residual**   | 0.49            | On average, ~0.5 points lower than actual ratings. |
+        | **Std. Dev. Resid.**| 1.18            | Errors typically spread ±1 point. |
+        | **Residual Min/Max**| -3.70 / +5.06   | Some cases poorly predicted (>3 points error). |
+        | **RMSE**            | > 1.0           | Moderate error on a 10-point scale. |
         """
     )
 
-    # --- Final Summary ---
+    st.markdown(
+        """
+        **Insights (ALS):**  
+        - Predictions cluster near 9 → tendency to **overestimate ratings**.  
+        - RMSE > 1 means the model is not highly accurate in distinguishing hotels.  
+        - Bias toward **popular hotels**, niche preferences are underrepresented.  
+        - Despite limitations, ALS provides **collaborative personalization** that complements content-based methods.  
+        """
+    )
+
+    # --- ALS Diagnostic Charts ---
+    als_images = [
+        ("als_prediction_summary.png", "ALS Prediction Distribution"),
+        ("als_residual_summary.png", "ALS Residuals Distribution"),
+    ]
+    _render_image_section("ALS Diagnostic Charts", als_images, n_cols=2)
+
+    # ==============================
+    # Final Summary
+    # ==============================
     st.subheader("Overall Evaluation Summary")
     st.markdown(
         """
-        - **Best Overall Model:** *Doc2Vec* delivers the most accurate and semantically meaningful recommendations, though it comes with higher computational cost.  
-        - **Best Lightweight Alternative:** *TF-IDF* offers fast performance with reasonably high accuracy, suitable for real-time applications or when resources are limited.  
-        - **Balanced Approach:** *LSI (Gensim)* sits in the middle, offering topic-level interpretability and efficiency.  
+        - **Content-Based Models:**  
+          - Doc2Vec delivers the most semantically accurate recommendations.  
+          - TF-IDF provides a fast, lightweight option.  
+          - LSI balances topic interpretability and efficiency.  
+
+        - **Collaborative Filtering (ALS):**  
+          - Adds personalization from user–item interactions.  
+          - Prediction errors are moderate (RMSE > 1), with bias towards popular hotels.  
+          - Works best when combined with content-based methods.  
 
         **Recommendation for Agoda:**  
-        - Use **Doc2Vec** for the main personalized recommendation pipeline (quality-focused).  
-        - Deploy **TF-IDF** as a fallback or lightweight semantic search option (speed-focused).  
-        - Continue A/B testing hybrid approaches (Doc2Vec + ALS collaborative filtering) to maximize both personalization and scalability.
+        - Use **Doc2Vec** for semantic search and content-based personalization.  
+        - Use **ALS** to incorporate collaborative signals from historical ratings.  
+        - Deploy a **hybrid recommender (Doc2Vec + ALS)** to maximize personalization and accuracy.  
         """
     )
