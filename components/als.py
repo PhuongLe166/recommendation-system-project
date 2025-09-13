@@ -107,6 +107,24 @@ def load_all_users_df() -> pd.DataFrame:
     return pd.DataFrame(columns=["userId"])
 
 
+@st.cache_data(show_spinner=False)
+def load_recs_user_ids() -> List[str]:
+    """Collect unique userIds that actually have ALS recommendations across all CSV parts."""
+    if not RECS_DIR.exists():
+        return []
+    files = sorted(RECS_DIR.glob("*.csv"))
+    if not files:
+        return []
+    user_ids: set[str] = set()
+    for csv_path in files:
+        try:
+            for chunk in pd.read_csv(csv_path, chunksize=50_000, usecols=["userId"], dtype=str):
+                user_ids.update(chunk["userId"].dropna().astype(str).tolist())
+        except Exception:
+            continue
+    return sorted(user_ids)
+
+
 @st.cache_data(show_spinner=True)
 def load_recs_for_user(user_id: str, top_k: int = 10) -> pd.DataFrame:
     """
@@ -124,14 +142,19 @@ def load_recs_for_user(user_id: str, top_k: int = 10) -> pd.DataFrame:
     ]
 
     frames = []
-    for chunk in pd.read_csv(files[0], chunksize=50_000, usecols=usecols, dtype=str):
-        matched = chunk[chunk["userId"] == str(user_id)]
-        if not matched.empty:
-            frames.append(matched)
+    # Scan ALL csv parts instead of only the first file
+    for csv_path in files:
+        for chunk in pd.read_csv(csv_path, chunksize=50_000, usecols=usecols, dtype=str):
+            matched = chunk[chunk["userId"] == str(user_id)]
+            if not matched.empty:
+                frames.append(matched)
     if not frames:
         return pd.DataFrame(columns=usecols)
 
     df = pd.concat(frames, ignore_index=True)
+    # Drop duplicates just in case user rows are split across parts
+    if "hotelID" in df.columns:
+        df = df.drop_duplicates(subset=["userId", "hotelID"]) 
     # Cast types
     for c in ["Average_Rating", "Predicted_Rating", "Hybrid_Score", "Normalized_Hybrid_Score"]:
         df[c] = pd.to_numeric(df[c], errors="coerce")
@@ -230,10 +253,15 @@ def _render_cards(df: pd.DataFrame):
     """Render ALS result cards with styled HTML/CSS while preserving original fields."""
     _inject_card_css_once()
     for _, r in df.iterrows():
-        norm = float(r.get("Normalized_Hybrid_Score", 0.0))
-        avg = float(r.get("Average_Rating", 0.0))
-        pred = float(r.get("Predicted_Rating", 0.0))
-        reviewers = int(r.get("Number_of_Reviewers", 0))
+        # Safe numeric conversions (handle NaN/None/strings)
+        _norm = pd.to_numeric(r.get("Normalized_Hybrid_Score", None), errors="coerce")
+        norm = float(_norm) if pd.notna(_norm) else 0.0
+        _avg = pd.to_numeric(r.get("Average_Rating", None), errors="coerce")
+        avg = float(_avg) if pd.notna(_avg) else 0.0
+        _pred = pd.to_numeric(r.get("Predicted_Rating", None), errors="coerce")
+        pred = float(_pred) if pd.notna(_pred) else 0.0
+        _rev = pd.to_numeric(r.get("Number_of_Reviewers", None), errors="coerce")
+        reviewers = int(_rev) if pd.notna(_rev) else 0
         title = str(r.get("Hotel_Name", "Hotel"))
         sid = str(r.get("hotelID", ""))
         pct = max(0.0, min(norm, 10.0)) * 10.0
@@ -306,6 +334,11 @@ def render_als_ui():
             users_df = load_all_users_df()
             user_ids = users_df.get("userId", pd.Series(dtype=str)).astype(str).tolist()
             user_ids = sorted(set(user_ids))
+            # Restrict to users that actually have ALS results if available
+            rec_user_ids = load_recs_user_ids()
+            if rec_user_ids:
+                inter = sorted(set(user_ids).intersection(rec_user_ids))
+                user_ids = inter if inter else rec_user_ids
             user_options = ["— Select user —"] + user_ids
             selected_user = st.selectbox("Select User ID (reviewerID)", user_options, index=0)
         with colB:
@@ -349,6 +382,7 @@ def render_als_ui():
         if user_id:
             with st.spinner("Fetching recommendations..."):
                 results_df = load_recs_for_user(user_id, int(topn))
+            loaded_count = len(results_df)
 
             # Thêm thông tin stars nếu có trong meta (hoặc dự phòng không có)
             # (Nếu bạn có file sao riêng, có thể merge ở đây)
@@ -368,14 +402,82 @@ def render_als_ui():
 
             if not results_df.empty:
                 results_df = results_df[results_df.apply(_pass, axis=1)]
+                filtered_count = len(results_df)
 
                 # Sort by selected mode
                 key = "Normalized_Hybrid_Score" if rank_mode.startswith("Normalized") else "Predicted_Rating"
                 if key in results_df.columns:
                     results_df = results_df.sort_values(key, ascending=False)
 
+                # If less than requested Top K, pad with popular/top hotels as fallback
+                pad_note = ""
+                if len(results_df) < topn:
+                    try:
+                        # Use filtered_count to avoid any interim mutations
+                        need = max(0, int(topn) - int(filtered_count))
+                        fb = load_hotel_summary()
+                        if not fb.empty and need > 0:
+                            fb = fb.copy()
+                            # unify columns
+                            if "Avg_Normalized_Hybrid_Score" in fb.columns:
+                                fb["Normalized_Hybrid_Score"] = fb["Avg_Normalized_Hybrid_Score"].astype(float)
+                            if "Average Rating" in fb.columns and "Average_Rating" not in fb.columns:
+                                fb["Average_Rating"] = fb["Average Rating"].astype(float)
+                            if "Predicted Rating" in fb.columns and "Predicted_Rating" not in fb.columns:
+                                fb["Predicted_Rating"] = pd.to_numeric(fb["Predicted Rating"], errors="coerce")
+                            if "Number_of_Visitors" in fb.columns and "Number_of_Reviewers" not in fb.columns:
+                                fb["Number_of_Reviewers"] = pd.to_numeric(fb["Number_of_Visitors"], errors="coerce").fillna(0).astype(int)
+
+                            used_ids = set(results_df.get("hotelID", pd.Series(dtype=str)).astype(str).tolist())
+                            if "hotelID" in fb.columns:
+                                fb = fb[~fb["hotelID"].astype(str).isin(used_ids)]
+
+                            # apply same filters
+                            def _pass_fb(row):
+                                ok = True
+                                try:
+                                    ok &= float(row.get("Average_Rating", 0)) >= float(min_avg)
+                                except Exception:
+                                    pass
+                                try:
+                                    ok &= int(row.get("Number_of_Reviewers", 0)) >= int(min_visitors)
+                                except Exception:
+                                    pass
+                                return ok
+
+                            fb = fb[fb.apply(_pass_fb, axis=1)]
+
+                            # sort fallback by best available signal
+                            sort_cols = [c for c in ["Normalized_Hybrid_Score", "Average_Rating"] if c in fb.columns]
+                            if sort_cols:
+                                fb = fb.sort_values(sort_cols[0], ascending=False)
+
+                            # Build output schema expected by renderer
+                            take = fb.head(need)
+                            out = pd.DataFrame({
+                                "userId": user_id,
+                                "hotelID": take.get("hotelID", pd.Series([], dtype=str)),
+                                "Hotel_Name": take.get("Hotel_Name", pd.Series([], dtype=str)),
+                                "Average_Rating": pd.to_numeric(take.get("Average_Rating", 0), errors="coerce"),
+                                "Predicted_Rating": pd.to_numeric(take.get("Predicted_Rating", take.get("Average_Rating", 0)), errors="coerce"),
+                                "Hybrid_Score": pd.to_numeric(take.get("Normalized_Hybrid_Score", take.get("Average_Rating", 0)), errors="coerce"),
+                                "Normalized_Hybrid_Score": pd.to_numeric(take.get("Normalized_Hybrid_Score", take.get("Average_Rating", 0)), errors="coerce"),
+                                "Rank": (results_df.get("Rank", pd.Series([], dtype=int)).max() or 0) + 1 + pd.Series(range(len(take))),
+                                "Number_of_Reviewers": pd.to_numeric(take.get("Number_of_Reviewers", 0), errors="coerce").fillna(0).astype(int),
+                            })
+
+                            results_df = pd.concat([results_df, out], ignore_index=True)
+                            pad_note = f" (padded with {len(out)} popular items)"
+                    except Exception:
+                        pass
+
                 # Display
                 st.subheader("Recommendations")
+                # Keep exactly Top K after padding and sort by selected key again
+                sort_key = "Normalized_Hybrid_Score" if rank_mode.startswith("Normalized") else "Predicted_Rating"
+                if sort_key in results_df.columns:
+                    results_df = results_df.sort_values(sort_key, ascending=False).head(topn)
+                st.caption(f"Showing {len(results_df)} of requested Top {topn} (loaded: {loaded_count}, after filters: {filtered_count}){pad_note}.")
                 if view_mode == "Cards":
                     _render_cards(results_df)
                 else:
@@ -389,7 +491,23 @@ def render_als_ui():
                     use_container_width=False,
                 )
             else:
-                st.info("No recommendations (user may not be in recs_scored_top10 or filters too strict).")
+                # Give a clearer hint and fallback to Top Hotels list
+                rec_ids = set(load_recs_user_ids())
+                if user_id and rec_ids and user_id not in rec_ids:
+                    st.warning("This user has no ALS results generated. Please choose another user.")
+                else:
+                    st.info("No recommendations (no matches after loading). Showing Top Hotels fallback below.")
+                fb = load_hotel_summary()
+                if not fb.empty:
+                    st.subheader("Top Hotels (Fallback)")
+                    show_cols = [
+                        "hotelID", "Hotel_Name",
+                        "Average Rating", "Predicted Rating",
+                        "Avg_Normalized_Hybrid_Score",
+                        "Number_of_Visitors", "Times_Recommended",
+                    ]
+                    show_cols = [c for c in show_cols if c in fb.columns]
+                    st.dataframe(fb[show_cols].head(topn), use_container_width=True, hide_index=True)
         elif not user_id:
             st.info("Please select a user to view recommendations.")
 
