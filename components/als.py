@@ -278,7 +278,7 @@ def _render_table(df: pd.DataFrame):
 def render_als_ui():
     st.header("ALS Recommendations")
 
-    tab1, tab2, tab3 = st.tabs(["ALS Recommendations", "Top Hotels", "Insights"])
+    tab1, tab2 = st.tabs(["ALS Recommendations", "Top Hotels"])
 
     # === TAB 1: ALS Recs ===
     with tab1:
@@ -409,9 +409,4 @@ def render_als_ui():
             show_cols = [c for c in show_cols if c in df.columns]
             st.dataframe(df[show_cols], use_container_width=True, hide_index=True)
 
-    # === TAB 3: Insights (KPIs) ===
-    with tab3:
-        st.markdown("#### KPIs (raw JSON)")
-        st.json(load_kpis(), expanded=False)
-    
     # End
